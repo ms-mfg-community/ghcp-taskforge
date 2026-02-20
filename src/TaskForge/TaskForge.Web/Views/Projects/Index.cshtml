@@ -1,0 +1,38 @@
+@model IEnumerable<ProjectDto>
+@{
+    ViewData["Title"] = "Projects";
+}
+
+<h1>Projects</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Create New Project</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th>Tasks</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var project in Model)
+        {
+            <tr>
+                <td>@project.Name</td>
+                <td>@project.Status</td>
+                <td>@project.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>@project.TaskCount</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@project.Id" class="btn btn-sm btn-info">Details</a>
+                    <a asp-action="Edit" asp-route-id="@project.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@project.Id" class="btn btn-sm btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
