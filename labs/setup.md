@@ -22,6 +22,7 @@ In this lab you will configure your development environment and verify all tools
 | .NET SDK | 8.0+ | TaskForge application |
 | Node.js | 18+ | MCP server execution |
 | Git | Latest | Version control |
+| jq | Latest | JSON parsing for hook scripts (optional on Windows) |
 
 ---
 
@@ -90,6 +91,18 @@ In this lab you will configure your development environment and verify all tools
 
 ---
 
+## Verify Copilot CLI Plugins
+
+If you have the Copilot CLI installed, verify plugin support:
+
+```bash
+copilot plugin marketplace list
+```
+
+You should see at least two default marketplaces: `copilot-plugins` and `awesome-copilot`.
+
+---
+
 ## Verification Checklist
 
 Run through each item to confirm your environment is ready:
@@ -99,6 +112,8 @@ Run through each item to confirm your environment is ready:
 - [ ] .NET project builds successfully: `dotnet build` (from `src/TaskForge`)
 - [ ] Custom agents are visible in Copilot Chat (type `@`)
 - [ ] MCP servers are connected (optional — check Copilot Chat panel)
+- [ ] (Optional) Plugin marketplaces accessible: `copilot plugin marketplace list`
+- [ ] `.github/hooks/` directory contains `hooks.json`
 
 ---
 
@@ -139,6 +154,26 @@ Run through each item to confirm your environment is ready:
 - Check that `.vscode/mcp.json` exists and is valid JSON.
 - Restart VS Code and re-allow MCP server startup when prompted.
 - Review the VS Code **Output** panel (select **MCP** from the dropdown) for error details.
+
+</details>
+
+<details>
+<summary><strong>Hook scripts not executing</strong></summary>
+
+1. Ensure hooks.json is in `.github/hooks/` on the default branch
+2. Verify scripts are executable: `chmod +x scripts/hooks/*.sh`
+3. Check JSON syntax: `jq . .github/hooks/hooks.json`
+4. Verify jq is installed for bash hooks: `jq --version`
+
+</details>
+
+<details>
+<summary><strong>Copilot CLI plugins not working</strong></summary>
+
+1. Ensure Copilot CLI is installed: `copilot --version`
+2. Check plugin support: `copilot plugin --help`
+3. List marketplaces: `copilot plugin marketplace list`
+4. If no marketplaces appear, try: `copilot plugin marketplace add github/copilot-plugins`
 
 </details>
 

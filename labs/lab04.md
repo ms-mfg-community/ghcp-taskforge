@@ -181,7 +181,134 @@ When evaluating extensions for your organization, consider:
 
 ---
 
-## 4.3 Copilot CLI: Beyond the Basics
+## 4.3 Copilot CLI Plugins: Extending Your Terminal
+
+While IDE extensions enhance Copilot Chat, **CLI plugins** extend the Copilot CLI with new capabilities directly in your terminal. Plugins are packages you install from community marketplaces or build yourself.
+
+### Plugin Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│              Copilot CLI                     │
+├──────────────┬──────────────┬───────────────┤
+│  Built-in    │  Marketplace │  Custom       │
+│  Commands    │  Plugins     │  Plugins      │
+│  (suggest,   │  (community) │  (your team)  │
+│   explain)   │              │               │
+└──────────────┴──────────────┴───────────────┘
+```
+
+### Understanding Marketplaces
+
+Copilot CLI ships with two default marketplaces:
+
+| Marketplace | Description |
+|-------------|-------------|
+| `copilot-plugins` | Official GitHub plugins |
+| `awesome-copilot` | Community-curated plugins |
+
+### Exercise: Explore the Plugin Ecosystem
+
+1. **List registered marketplaces:**
+   ```bash
+   copilot plugin marketplace list
+   ```
+
+2. **Browse available plugins:**
+   ```bash
+   copilot plugin marketplace browse awesome-copilot
+   ```
+
+3. **Install a plugin** (example):
+   ```bash
+   copilot plugin install database-data-management@awesome-copilot
+   ```
+
+4. **Manage your plugins:**
+   ```bash
+   copilot plugin list          # View installed plugins
+   copilot plugin update NAME   # Update a plugin
+   copilot plugin uninstall NAME # Remove a plugin
+   ```
+
+### Exercise: Using Plugins in Interactive Sessions
+
+During an interactive Copilot CLI session, you can manage plugins with slash commands:
+
+```
+/plugin marketplace list
+/plugin marketplace browse awesome-copilot
+/plugin install PLUGIN-NAME@MARKETPLACE-NAME
+```
+
+### Installing Plugins from Git Repositories
+
+You can also install plugins directly from any Git repository:
+
+```bash
+# From GitHub
+copilot plugin install OWNER/REPO
+
+# From any Git URL
+copilot plugin install https://gitlab.com/OWNER/REPO.git
+
+# From a local path (great for development)
+copilot plugin install ./my-custom-plugin
+```
+
+> **Note:** The repository must contain a `plugin.json` file in `.github/plugin/`, `.claude-plugin/`, or the repository root.
+
+### Adding Custom Marketplaces
+
+Teams can create and share their own plugin marketplaces:
+
+```bash
+# Add a marketplace from a GitHub repository
+copilot plugin marketplace add OWNER/REPO
+
+# Remove a marketplace
+copilot plugin marketplace remove MARKETPLACE-NAME
+```
+
+### IDE Extensions vs CLI Plugins: Know the Difference
+
+| Aspect | IDE Extensions | CLI Plugins |
+|--------|---------------|-------------|
+| **Where** | VS Code, JetBrains, etc. | Terminal / command line |
+| **Invoked via** | `@extension` in Chat | Plugin commands in CLI |
+| **Install from** | VS Code Marketplace | CLI marketplaces or Git repos |
+| **Examples** | @docker, @sentry, @azure | database-data-management, etc. |
+| **Best for** | Visual workflows, chat | Terminal workflows, automation |
+
+<details>
+<summary>Knowledge Check: When would you use a CLI plugin vs an IDE extension?</summary>
+
+**Use CLI plugins when:**
+- You work primarily in the terminal
+- You need to automate CI/CD pipelines
+- You want to extend Copilot for scripting workflows
+- Your team needs custom tooling distributed via a private marketplace
+
+**Use IDE extensions when:**
+- You want visual integration in your editor
+- You need rich UI interactions (previews, diagrams)
+- The extension provides Chat-based interaction (@mentions)
+- You're working in a graphical development environment
+
+**Use both when:** You want the full Copilot experience across terminal and IDE.
+
+</details>
+
+### ✅ Checkpoint
+
+- [ ] You can list and browse plugin marketplaces
+- [ ] You understand how to install plugins from marketplaces and Git repos
+- [ ] You can manage installed plugins (list, update, uninstall)
+- [ ] You know the difference between IDE extensions and CLI plugins
+
+---
+
+## 4.4 Copilot CLI: Beyond the Basics
 
 In **Lab 01** you learned the fundamentals of `ghcs` (suggest) and `ghce` (explain). Now let's use Copilot CLI for real workflow automation tasks.
 
@@ -248,7 +375,7 @@ ghcs "show the folder structure of src/TaskForge with file counts"
 
 ---
 
-## 4.4 Full Workflow Orchestration: Design to Delivery
+## 4.5 Full Workflow Orchestration: Design to Delivery
 
 This is the **capstone exercise** that brings together everything you've learned across all four labs. You'll walk through a complete AI-assisted workflow from design to documentation.
 
@@ -451,7 +578,7 @@ Each phase leverages a different Copilot capability, and the output of each phas
 
 ---
 
-## 4.5 Copilot Spaces (Bonus)
+## 4.6 Copilot Spaces (Bonus)
 
 ### What Are Copilot Spaces?
 
@@ -466,7 +593,7 @@ Each phase leverages a different Copilot capability, and the output of each phas
 
 ---
 
-## 4.6 Best Practices & What's Next
+## 4.7 Best Practices & What's Next
 
 ### Feature Summary: All Labs at a Glance
 
@@ -483,6 +610,8 @@ Each phase leverages a different Copilot capability, and the output of each phas
 | PR Summaries | 3 | Auto-generated change descriptions |
 | MCP Servers | 4 | External data and documentation access |
 | Extensions | 4 | Third-party tool integrations |
+| CLI Plugins | 4 | Terminal-based extensibility via marketplaces and Git repos |
+| Hooks | 4 | Lifecycle hooks for custom automation triggers |
 | Copilot Spaces | 4 | Curated context for better responses |
 
 ### Best Practices Checklist
@@ -497,6 +626,7 @@ Use this as a reference when adopting Copilot in your own projects:
 - [ ] **Use quality gates between phases** — Review the output of each pipeline phase before moving to the next
 - [ ] **Leverage MCP for up-to-date information** — Connect to documentation sources for accurate, current references
 - [ ] **Combine CLI and IDE** — Use each where it's strongest: CLI for commands, IDE for code
+- [ ] **Explore CLI plugins** — Browse marketplaces for plugins that accelerate your terminal workflows
 
 ### Resources for Further Learning
 
@@ -516,6 +646,7 @@ Use this as a reference when adopting Copilot in your own projects:
 
 ✅ Configured and used **MCP servers** to extend Copilot's knowledge with live documentation
 ✅ Explored the **Copilot Extensions** ecosystem and understood when to use extensions vs agents vs MCP
+✅ Discovered **Copilot CLI Plugins** — how to browse marketplaces, install plugins, and manage custom tooling
 ✅ Mastered **Copilot CLI** for git workflows, debugging, and project exploration
 ✅ Orchestrated a **complete AI pipeline** — from design to documentation — using the full Copilot toolkit
 ✅ Learned **best practices** for adopting Copilot in real projects
@@ -527,7 +658,7 @@ Use this as a reference when adopting Copilot in your own projects:
 | **Lab 01** | The AI Design Studio | Set up Copilot CLI, custom instructions, and reusable prompts |
 | **Lab 02** | Building with Your AI Team | Create custom agents, use sub-agents, and leverage Agent Mode |
 | **Lab 03** | The Autonomous Developer | Use the Coding Agent, code review, and inline suggestions |
-| **Lab 04** | Orchestrating the AI Pipeline | Combine MCP, extensions, CLI, and agents into a full workflow |
+| **Lab 04** | Orchestrating the AI Pipeline | Combine MCP, extensions, CLI plugins, CLI, and agents into a full workflow |
 
 ### Call to Action
 
@@ -537,6 +668,7 @@ You now have a complete toolkit for AI-assisted software development. Here's how
 2. **Build your team** — Create custom agents that match your team's roles and expertise
 3. **Automate the routine** — Use reusable prompts for tasks your team does repeatedly
 4. **Extend your reach** — Connect MCP servers for the documentation and tools your team relies on
-5. **Iterate continuously** — Refine your prompts, agents, and instructions as you learn what works
+5. **Leverage CLI plugins** — Install community plugins and build custom ones for your team's terminal workflows
+6. **Iterate continuously** — Refine your prompts, agents, and instructions as you learn what works
 
 > **🎉 Congratulations!** You've completed the GitHub Copilot Design Workshop. Go build something amazing with your AI-powered team!

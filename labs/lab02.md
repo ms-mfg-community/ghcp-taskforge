@@ -408,7 +408,134 @@ the previous.       combined at end.     then synthesize.
 
 ---
 
-## 2.5 Building a Feature with Your AI Team
+## 2.5 Copilot Agent Hooks: Automating the Guardrails
+
+While custom agents define *what* AI can do, **hooks** define *when* custom actions run during an agent session. Hooks are shell scripts triggered at key lifecycle events — think of them as middleware for your AI workflow.
+
+### What Are Hooks?
+
+Hooks are configured in `.github/hooks/hooks.json` and execute custom shell commands at these trigger points:
+
+| Hook | When It Fires | Can Block? | Use Case |
+|------|--------------|------------|----------|
+| `sessionStart` | Agent session begins | No | Logging, environment setup |
+| `sessionEnd` | Agent session ends | No | Cleanup, reporting |
+| `userPromptSubmitted` | User sends a prompt | No | Audit trail, compliance |
+| `preToolUse` | Before agent uses a tool | **Yes** | Security gates, policy enforcement |
+| `postToolUse` | After a tool completes | No | Quality checks, metrics |
+| `errorOccurred` | An error happens | No | Alerts, error logging |
+
+> **Key insight:** The `preToolUse` hook is the most powerful — it can **deny** tool executions, acting as a security gate for your AI agent.
+
+### Exercise: Explore the Hooks Configuration
+
+1. Open `.github/hooks/hooks.json` in the repository
+2. Examine the structure:
+
+```json
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "./scripts/hooks/security-check.sh",
+        "powershell": "./scripts/hooks/security-check.ps1",
+        "cwd": ".",
+        "timeoutSec": 15
+      }
+    ]
+  }
+}
+```
+
+3. Note the key fields:
+   - `type`: Always `"command"` for shell scripts
+   - `bash` / `powershell`: Platform-specific script paths
+   - `cwd`: Working directory for the script
+   - `timeoutSec`: Maximum execution time (default: 30s)
+
+### Exercise: Understand the Security Hook
+
+Open `scripts/hooks/security-check.sh` and examine how it works:
+
+```bash
+#!/bin/bash
+INPUT=$(cat)  # Read JSON input from stdin
+TOOL_NAME=$(echo "$INPUT" | jq -r '.toolName')
+TOOL_ARGS=$(echo "$INPUT" | jq -r '.toolArgs')
+
+# Block dangerous commands
+if echo "$TOOL_ARGS" | grep -qE "rm -rf /|DROP TABLE|format|sudo rm"; then
+  echo '{"permissionDecision":"deny","permissionDecisionReason":"Dangerous command blocked by security hook"}'
+  exit 0
+fi
+```
+
+**How it works:**
+- The hook receives JSON input via stdin with `toolName` and `toolArgs`
+- It inspects the command for dangerous patterns
+- If dangerous: outputs JSON with `"permissionDecision": "deny"`
+- If safe: exits silently (allows by default)
+
+### Exercise: Test a Hook Locally
+
+You can test hooks without running a full agent session:
+
+```bash
+# Simulate a dangerous command
+echo '{"timestamp":1704614600000,"cwd":".","toolName":"bash","toolArgs":"{\"command\":\"rm -rf /\"}"}' | ./scripts/hooks/security-check.sh
+
+# Expected output:
+# {"permissionDecision":"deny","permissionDecisionReason":"Dangerous command blocked by security hook"}
+
+# Simulate a safe command  
+echo '{"timestamp":1704614600000,"cwd":".","toolName":"bash","toolArgs":"{\"command\":\"dotnet build\"}"}' | ./scripts/hooks/security-check.sh
+
+# Expected output: (none — command is allowed)
+```
+
+### Hooks in the Design Process
+
+In our "AI in the Design Process" theme, hooks serve as **quality gates**:
+
+```
+┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+│ Agent wants  │───▶│ preToolUse   │───▶│ Tool runs   │
+│ to edit code │    │ hook checks  │    │ if approved  │
+└─────────────┘    │ security     │    └─────────────┘
+                   └──────┬───────┘
+                          │ deny
+                          ▼
+                   ┌──────────────┐
+                   │ Agent gets   │
+                   │ denial reason│
+                   │ & adapts     │
+                   └──────────────┘
+```
+
+<details>
+<summary>Knowledge Check: When would you use each hook type?</summary>
+
+- **sessionStart**: Initialize project-specific variables, log who started the session
+- **preToolUse**: Enforce security policies, restrict file access, block dangerous operations
+- **postToolUse**: Run linters after code changes, collect metrics on tool usage
+- **userPromptSubmitted**: Audit trail for compliance, detect sensitive prompts
+- **errorOccurred**: Alert the team via Slack/email, log for debugging
+- **sessionEnd**: Generate session summary reports, cleanup temp files
+
+</details>
+
+### ✅ Checkpoint
+
+- [ ] You can locate and explain the hooks.json configuration
+- [ ] You understand the 6 hook trigger types
+- [ ] You know that preToolUse is the only hook that can block actions
+- [ ] You can test hooks locally by piping JSON input
+
+---
+
+## 2.6 Building a Feature with Your AI Team
 
 Now let's bring it all together — use multiple agents in sequence to design, implement, review, and document a feature, just like a real development team.
 
@@ -582,6 +709,7 @@ In this lab you learned:
 - **Agent Mode** enables autonomous multi-file editing — Copilot decides which files to create, edit, and wire together
 - **Sub-agents** run independent tasks in parallel, combining results in your main conversation
 - **Multi-agent workflows** chain specialized agents sequentially: design → implement → review → document
+- **Copilot Agent Hooks** are shell scripts triggered at lifecycle events (like `preToolUse`) that act as security gates and quality checks for your AI workflow
 - **Orchestration patterns** (sequential, parallel, hybrid) match how your tasks depend on each other
 
 **Next:** [Lab 03 — The Autonomous Developer](lab03.md) — Leverage the Copilot Coding Agent for issue-to-PR automation, code review, and inline suggestions.

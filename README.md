@@ -37,7 +37,9 @@ A hands-on workshop consisting of **4 labs (~45 minutes total)** that teaches de
 | 🚀 Copilot Coding Agent | 3 | Issue → autonomous PR creation |
 | 🔍 Code Review | 3, 4 | AI-powered PR review |
 | 📊 PR Summaries | 3 | Auto-generated PR descriptions |
+| 🪝 Agent Hooks | 2 | `.github/hooks/hooks.json` lifecycle events |
 | 🔌 MCP/Plugins | 4 | External tool integration |
+| 🧩 CLI Plugins | 4 | Extend Copilot CLI with marketplace plugins |
 | 💡 Inline Suggestions | 3 | Real-time code completion |
 
 ---
@@ -77,6 +79,8 @@ See the [Lab Setup guide](labs/setup.md) for detailed installation instructions.
 ```
 ghcp-taskforge-copilot-labs/
 ├── .github/
+│   ├── hooks/                   # Copilot agent hook configurations
+│   │   └── hooks.json
 │   ├── agents/                  # Custom Copilot agent definitions
 │   ├── instructions/            # Custom instructions for Copilot
 │   └── prompts/                 # Reusable prompt templates
@@ -94,6 +98,8 @@ ghcp-taskforge-copilot-labs/
 │       ├── TaskForge.Data/      # EF Core data access layer
 │       ├── TaskForge.Web/       # ASP.NET Core MVC web application
 │       └── TaskForge.slnx       # Solution file
+├── scripts/
+│   └── hooks/                   # Hook scripts (session logging, security checks)
 └── README.md                    # This file
 ```
 

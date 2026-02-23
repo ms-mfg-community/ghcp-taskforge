@@ -37,3 +37,7 @@ bld/
 
 # Secrets
 appsettings.Development.json
+
+# Hook logs
+logs/*.log
+logs/*.csv
