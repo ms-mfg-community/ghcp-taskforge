@@ -7,7 +7,7 @@ In this lab you will configure your development environment and verify all tools
 **References:**
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [GitHub CLI](https://cli.github.com/)
+- [Copilot CLI Installation](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli)
 
 ---
 
@@ -17,10 +17,9 @@ In this lab you will configure your development environment and verify all tools
 |-------------|---------|---------|
 | VS Code | Latest | Primary IDE with GitHub Copilot integration |
 | GitHub Copilot | Pro/Pro+/Business/Enterprise | Required for all lab exercises |
-| GitHub CLI | Latest | Required for Copilot CLI features |
-| Copilot CLI Extension | Latest | Terminal-based AI assistant (`ghcs`, `ghce`) |
+| Copilot CLI | Latest | Standalone terminal AI agent (`copilot`) |
 | .NET SDK | 8.0+ | TaskForge application |
-| Node.js | 18+ | MCP server execution |
+| Node.js | 22+ | Copilot CLI npm install & MCP server execution |
 | Git | Latest | Version control |
 | jq | Latest | JSON parsing for hook scripts (optional on Windows) |
 
@@ -28,24 +27,47 @@ In this lab you will configure your development environment and verify all tools
 
 ## Install GitHub Copilot CLI
 
-1. **Install GitHub CLI:** Download from [https://cli.github.com/](https://cli.github.com/) and follow the installer for your OS.
-2. **Authenticate with GitHub:**
-   ```bash
-   gh auth login
-   ```
-3. **Install the Copilot extension:**
-   ```bash
-   gh extension install github/gh-copilot
-   ```
-4. **Verify the installation:**
-   ```bash
-   gh copilot --help
-   ```
-5. **Set up aliases (optional):**
-   ```bash
-   alias ghcs='gh copilot suggest'
-   alias ghce='gh copilot explain'
-   ```
+GitHub Copilot CLI is a standalone terminal application. Choose the install method for your platform:
+
+**Option A — npm (all platforms, requires Node.js 22+):**
+```bash
+npm install -g @github/copilot
+```
+
+**Option B — WinGet (Windows):**
+```powershell
+winget install GitHub.Copilot
+```
+
+**Option C — Homebrew (macOS / Linux):**
+```bash
+brew install copilot-cli
+```
+
+**Option D — Install script (macOS / Linux):**
+```bash
+curl -fsSL https://gh.io/copilot-install | bash
+```
+
+### Authenticate
+
+On first launch, Copilot CLI will prompt you to log in:
+
+1. Start an interactive session: `copilot`
+2. When prompted, enter `/login` and follow the browser-based authentication flow.
+
+Alternatively, set a fine-grained personal access token with the **Copilot Requests** permission as an environment variable:
+```bash
+export GH_TOKEN=your_token_here
+```
+
+### Verify the installation
+
+```bash
+copilot --version
+```
+
+You should see a version number like `v0.x.x`.
 
 ---
 
@@ -108,7 +130,7 @@ You should see at least two default marketplaces: `copilot-plugins` and `awesome
 Run through each item to confirm your environment is ready:
 
 - [ ] GitHub Copilot is active in VS Code (check the status bar icon)
-- [ ] Copilot CLI works: `gh copilot suggest "hello world"`
+- [ ] Copilot CLI works: `copilot --version`
 - [ ] .NET project builds successfully: `dotnet build` (from `src/TaskForge`)
 - [ ] Custom agents are visible in Copilot Chat (type `@`)
 - [ ] MCP servers are connected (optional — check Copilot Chat panel)
@@ -122,9 +144,11 @@ Run through each item to confirm your environment is ready:
 <details>
 <summary><strong>Copilot CLI not found</strong></summary>
 
-- Ensure GitHub CLI is installed and on your `PATH`: `gh --version`
-- Re-install the Copilot extension: `gh extension install github/gh-copilot`
-- If you get a permissions error, run: `gh auth refresh -s copilot`
+- Verify the install succeeded: `copilot --version`
+- If installed via npm, ensure the global npm bin directory is on your PATH: `npm bin -g`
+- If installed via WinGet, restart your terminal after installation
+- Try reinstalling: `npm install -g @github/copilot`
+- On Windows, ensure you are using PowerShell v6+
 
 </details>
 
@@ -150,7 +174,7 @@ Run through each item to confirm your environment is ready:
 <details>
 <summary><strong>MCP server connection issues</strong></summary>
 
-- Ensure Node.js 18+ is installed: `node --version`
+- Ensure Node.js 22+ is installed: `node --version`
 - Check that `.vscode/mcp.json` exists and is valid JSON.
 - Restart VS Code and re-allow MCP server startup when prompted.
 - Review the VS Code **Output** panel (select **MCP** from the dropdown) for error details.

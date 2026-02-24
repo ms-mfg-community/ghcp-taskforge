@@ -28,7 +28,7 @@ A hands-on workshop consisting of **4 labs (~45 minutes total)** that teaches de
 
 | Feature | Lab | Description |
 |---------|-----|-------------|
-| 🖥️ Copilot CLI | 1, 4 | Terminal-based AI assistant (`ghcs`, `ghce`) |
+| 🖥️ Copilot CLI | 1, 4 | Standalone terminal AI agent (`copilot`) |
 | 📋 Custom Instructions | 1 | `.github/copilot-instructions.md` |
 | 📝 Reusable Prompts | 1, 4 | `.github/prompts/*.prompt.md` |
 | 🤖 Custom Agents | 2 | `.github/agents/*.agent.md` |

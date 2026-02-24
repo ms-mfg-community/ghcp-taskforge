@@ -310,9 +310,9 @@ copilot plugin marketplace remove MARKETPLACE-NAME
 
 ## 4.4 Copilot CLI: Beyond the Basics
 
-In **Lab 01** you learned the fundamentals of `ghcs` (suggest) and `ghce` (explain). Now let's use Copilot CLI for real workflow automation tasks.
+In **Lab 01** you learned the fundamentals of Copilot CLI's interactive and programmatic modes. Now let's use it for real workflow automation tasks.
 
-> **Reminder:** `ghcs` = `gh copilot suggest` | `ghce` = `gh copilot explain`
+> **Reminder:** `copilot` starts an interactive session | `copilot -p "..."` runs a single prompt
 
 ### Exercise: Git Workflow Automation
 
@@ -320,27 +320,27 @@ Use Copilot CLI to handle common Git workflow tasks without memorizing commands:
 
 ```bash
 # Discover pull request status
-ghcs "show me my open pull requests on this repository"
+copilot -p "Show me my open pull requests on this repository"
 
 # Create a new issue directly from the terminal
-ghcs "create a new issue titled 'Add task export to CSV' with a description"
+copilot -p "Create a new issue titled 'Add task export to CSV' with a description about exporting task data"
 
 # Understand recent changes
-ghcs "explain what the last 5 commits changed"
+copilot -p "Explain what the last 5 commits changed"
 ```
 
-**Observe:** Copilot CLI suggests the correct `gh` commands, including flags you might not know exist. You can review the suggestion and press **Enter** to execute.
+**Observe:** Copilot CLI executes the tasks directly — it can interact with GitHub.com to list PRs, create issues, and more. Use `--allow-tool 'shell(git)'` to let it run git commands without prompting.
 
 ### Exercise: Debugging with Copilot CLI
 
 When build errors occur, Copilot CLI can help you understand and fix them:
 
 ```bash
-# Explain a build error
-ghce "dotnet build 2>&1 | head -20"
+# Explain a build error (pipe output to Copilot)
+copilot -p "Run 'dotnet build' and explain any errors"
 
 # Get a fix suggestion
-ghcs "fix the build error about missing reference to TaskForge.Core"
+copilot -p "Fix the build error about missing reference to TaskForge.Core"
 ```
 
 ### Exercise: Project Exploration
@@ -349,29 +349,49 @@ Use Copilot CLI to quickly navigate and understand the codebase:
 
 ```bash
 # Find async patterns in the project
-ghcs "list all C# files in the project that contain 'async'"
+copilot -p "List all C# files in the project that contain 'async'"
 
 # Discover technical debt
-ghcs "find all TODO comments in the codebase"
+copilot -p "Find all TODO comments in the codebase"
 
 # Understand project structure
-ghcs "show the folder structure of src/TaskForge with file counts"
+copilot -p "Show the folder structure of src/TaskForge with file counts"
 ```
+
+### Exercise: Interactive Deep Dive
+
+Start an interactive session for a longer exploration:
+
+```bash
+copilot
+```
+
+Then try these prompts in the conversation:
+
+```
+Analyze the TaskForge project architecture and identify areas for improvement
+
+What design patterns are used in the Core layer?
+
+Create a summary of all the service interfaces and their methods
+```
+
+> 💡 Press **Shift+Tab** to switch to **plan mode** — Copilot will build a structured plan before making changes.
 
 ### CLI vs IDE Copilot: When to Use Each
 
-| Scenario | Use CLI (`ghcs`/`ghce`) | Use IDE (Copilot Chat) |
+| Scenario | Use CLI (`copilot`) | Use IDE (Copilot Chat) |
 |----------|------------------------|----------------------|
 | Quick command lookup | ✅ | |
-| Multi-file code generation | | ✅ |
+| Multi-file code generation | ✅ (with `--allow-all-tools`) | ✅ |
 | Git/GitHub workflow | ✅ | |
-| Architecture design | | ✅ |
+| Architecture design | ✅ (interactive mode) | ✅ |
 | Explaining a command | ✅ | |
 | Explaining code in context | | ✅ |
 | CI/CD troubleshooting | ✅ | |
-| Refactoring across files | | ✅ |
+| Refactoring across files | ✅ (agent mode) | ✅ (Agent Mode) |
 
-> **Pro tip:** Use CLI when you're already in the terminal and need a quick answer. Use IDE Copilot when you need multi-file context or agent-powered workflows.
+> **Pro tip:** The CLI is a full agent — it can read, write, and execute files just like Agent Mode in VS Code. Use it when you prefer the terminal, need to script AI into workflows, or want to work without an IDE.
 
 ---
 

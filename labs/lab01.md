@@ -6,7 +6,8 @@ In this lab you will use GitHub Copilot to design the foundation of a software a
 
 References:
 
-- [GitHub Copilot in the CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)
+- [About GitHub Copilot CLI](https://docs.github.com/en/copilot/concepts/agents/about-copilot-cli)
+- [Installing Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli)
 - [Custom Instructions for Copilot](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot)
 - [Reusable Prompt Files](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot#repository-level-prompt-files)
 - [Copilot Chat in VS Code](https://docs.github.com/en/copilot/using-github-copilot/copilot-chat/using-github-copilot-chat-in-your-ide)
@@ -15,61 +16,65 @@ References:
 
 ## 1.1 Meet Your AI Design Partner: Copilot CLI
 
-GitHub Copilot isn't just an editor feature — it lives in your terminal too. **Copilot CLI** gives you two powerful commands:
+GitHub Copilot isn't just an editor feature — it lives in your terminal too. **Copilot CLI** is a standalone AI agent you can interact with directly from the command line.
 
-| Command | What it does |
-|---------|-------------|
-| `ghcs` | **Copilot Suggest** — Describe what you want to do in plain English and get a shell command back. |
-| `ghce` | **Copilot Explain** — Paste a command you don't understand and get a human-readable explanation. |
+| Mode | How to use | Description |
+|------|-----------|-------------|
+| Interactive | `copilot` | Start a conversation — ask questions, request code changes, explore your project |
+| Programmatic | `copilot -p "prompt"` | Pass a single prompt, Copilot completes the task and exits |
 
-Think of `ghcs` as *"I know what I want but not the command"* and `ghce` as *"I see this command but don't know what it does."*
+Think of it as having a senior developer pair-programming with you, right in your terminal.
 
-### Exercise 1 — Suggest a command
+### Exercise 1 — Start an interactive session
 
-Open your terminal and ask Copilot to suggest a `dotnet` command:
-
-```
-ghcs "create a new ASP.NET Core MVC project with individual authentication"
-```
-
-Copilot will respond with a suggested command like:
+Open your terminal in the TaskForge project directory and start Copilot CLI:
 
 ```
-dotnet new mvc --auth Individual --use-local-db
+copilot
 ```
 
-> 💡 You can accept, revise, or reject the suggestion. Copilot CLI is interactive — it will ask what you'd like to do next.
-
-### Exercise 2 — Explain a command
-
-Now let's go the other direction. Suppose you encounter the command from Exercise 1 and want to understand every flag:
+You'll see a welcome message and a prompt. Ask Copilot about the project:
 
 ```
-ghce "dotnet new mvc --auth Individual --use-local-db"
+What dotnet command would I use to create a new ASP.NET Core MVC project with individual authentication?
 ```
 
-You should see output that breaks down each part:
+Copilot will suggest the command and explain the flags. You can ask follow-up questions, or type `exit` to leave the session.
 
-```
-This command creates a new ASP.NET Core MVC project with:
-  • --auth Individual  →  Configures ASP.NET Core Identity for user login/registration
-  • --use-local-db     →  Uses SQLite (LocalDB) instead of SQL Server for the identity store
+> 💡 Press **Shift+Tab** to toggle between the default ask/execute mode and **plan mode**, where Copilot builds a structured implementation plan before writing code.
+
+### Exercise 2 — Use programmatic mode
+
+For quick, one-off questions, use the `-p` flag:
+
+```bash
+copilot -p "Explain what the command 'dotnet new mvc --auth Individual --use-local-db' does"
 ```
 
-> ✅ **Checkpoint:** You successfully used both `ghcs` and `ghce` in your terminal.
+Copilot explains each flag and exits. This is perfect for scripting or quick lookups.
+
+### Exercise 3 — Interact with GitHub
+
+Copilot CLI can also interact with GitHub.com:
+
+```bash
+copilot -p "List my open pull requests"
+```
+
+> ✅ **Checkpoint:** You successfully used both interactive and programmatic modes of Copilot CLI.
 
 ### Knowledge Check
 
 <details>
-<summary>❓ When would you use <code>ghcs</code> vs <code>ghce</code>?</summary>
+<summary>❓ When would you use interactive vs programmatic mode?</summary>
 
-- Use **`ghcs`** (suggest) when you know *what* you want to accomplish but aren't sure of the exact command or flags. Example: *"How do I scaffold an EF Core migration?"*
-- Use **`ghce`** (explain) when you see an unfamiliar command — perhaps in a README, a CI pipeline, or a teammate's script — and want to understand what it does before running it.
+- Use **interactive mode** (`copilot`) when you want an ongoing conversation — exploring a codebase, iterating on changes, or working through a multi-step task with back-and-forth guidance.
+- Use **programmatic mode** (`copilot -p "..."`) when you need a quick, one-shot answer — explaining a command, looking up a Git workflow, or scripting Copilot into a CI pipeline.
 
 A good rule of thumb:
 ```
-I want to DO something   →  ghcs
-I want to UNDERSTAND something  →  ghce
+I want to EXPLORE or ITERATE  →  copilot (interactive)
+I want a QUICK ANSWER         →  copilot -p "..."
 ```
 
 </details>
@@ -326,7 +331,7 @@ Take a moment to reflect on the design process you just went through:
 
 In this lab you learned how to use GitHub Copilot as a design partner across multiple surfaces:
 
-- ✅ **Copilot CLI** — Used `ghcs` to suggest commands and `ghce` to explain them, right in your terminal
+- ✅ **Copilot CLI** — Used interactive and programmatic modes to explore commands and interact with GitHub, right in your terminal
 - ✅ **Custom Instructions** — Explored how `copilot-instructions.md` provides global context and `*.instructions.md` files add conditional, file-type-specific guidance
 - ✅ **Reusable Prompts** — Used `.prompt.md` files to get structured, repeatable output for domain design and test generation
 - ✅ **Copilot Chat** — Had an iterative design conversation to shape the TaskForge domain model, with Copilot respecting your project's architecture and coding standards
