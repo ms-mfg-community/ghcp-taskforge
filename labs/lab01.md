@@ -2,7 +2,7 @@
 
 In this lab you'll get hands-on with GitHub Copilot CLI — learning how to navigate the interface, customize it for your project, and leverage power features that will make you productive from day one. By the end, you'll feel confident using the CLI as your primary AI coding partner.
 
-> ⏱️ Duration: ~10 minutes
+> ⏱️ Duration: ~10 minutes · 8 exercises
 
 References:
 
@@ -25,37 +25,29 @@ GitHub Copilot CLI is a full AI agent that lives in your terminal. It can read y
 
 ### Exercise 1 — Start Copilot and explore the project
 
-1. Open your terminal and navigate to the TaskForge project directory.
+**Part A — Interactive mode.** Open your terminal, navigate to the TaskForge project directory, and start Copilot CLI:
 
-2. Start Copilot CLI:
+```
+copilot
+```
 
-   ```
-   copilot
-   ```
+Copilot asks you to **trust the folder**. You'll see three options:
 
-3. Copilot asks you to **trust the folder**. You'll see three options:
+| Option | What it does |
+|--------|-------------|
+| **Yes, proceed** | Trust for this session only |
+| **Yes, and remember this folder** | Trust permanently — won't ask again |
+| **No, exit (Esc)** | End the session immediately |
 
-   | Option | What it does |
-   |--------|-------------|
-   | **Yes, proceed** | Trust for this session only |
-   | **Yes, and remember this folder** | Trust permanently — won't ask again |
-   | **No, exit (Esc)** | End the session immediately |
+Choose **Yes, proceed** (or **Yes, and remember** if this is your own machine). Then ask:
 
-   Choose **Yes, proceed** (or **Yes, and remember** if this is your own machine).
+```
+What is the structure of this project?
+```
 
-4. Ask Copilot about the project structure:
+Watch how Copilot reads files and directories to discover the N-tier architecture (`TaskForge.Web`, `TaskForge.Core`, `TaskForge.Data`) without you having to explain it.
 
-   ```
-   What is the structure of this project?
-   ```
-
-   Watch how Copilot reads files and directories to understand the codebase. It discovers the N-tier architecture (`TaskForge.Web`, `TaskForge.Core`, `TaskForge.Data`) without you having to explain it.
-
-> 💡 Copilot automatically reads your project files to build context. The more structured your project, the better its understanding.
-
-### Exercise 2 — Try programmatic mode
-
-For quick, one-shot questions, use the `-p` flag. Type `/exit` to leave your current session, then run:
+**Part B — Programmatic mode.** Type `/exit` to leave, then try a one-shot prompt:
 
 ```bash
 copilot -p "Explain what the command 'dotnet new mvc --auth Individual --use-local-db' does"
@@ -63,9 +55,7 @@ copilot -p "Explain what the command 'dotnet new mvc --auth Individual --use-loc
 
 Copilot explains each flag and exits — perfect for scripting or quick lookups.
 
-### Exercise 3 — Interact with GitHub
-
-Copilot CLI has a built-in GitHub MCP server, so it can interact with GitHub.com directly:
+**Part C — GitHub integration.** Copilot CLI has a built-in GitHub MCP server:
 
 ```bash
 copilot -p "List my open pull requests"
@@ -81,33 +71,27 @@ copilot -p "List my open pull requests"
 
 Now that you have a session running, let's learn the essential interaction patterns that make the CLI fast and fluid.
 
-### Exercise 4 — Work with files using `@`
+### Exercise 2 — File context and shell commands
 
-Start a new interactive session with `copilot`, then reference a specific file to focus Copilot's attention:
+Start a new interactive session with `copilot`, then try these two shortcuts:
 
-```
-@src/TaskForge/TaskForge.Web/Program.cs Explain the middleware pipeline in this file
-```
+1. **`@` — File context.** Reference a file to focus Copilot's attention:
 
-The `@` prefix adds the file's contents directly into your prompt as context. As you type a path, matching files appear below the prompt — use **arrow keys** and **Tab** to autocomplete.
+   ```
+   @src/TaskForge/TaskForge.Web/Program.cs Explain the middleware pipeline in this file
+   ```
 
-### Exercise 5 — Run shell commands with `!`
+   The `@` prefix adds the file's contents directly into your prompt. As you type a path, matching files appear — use **arrow keys** and **Tab** to autocomplete.
 
-You don't need to leave Copilot to run terminal commands. Prefix any command with `!` to execute it directly — no AI involved:
+2. **`!` — Shell escape.** Run terminal commands without leaving Copilot:
 
-```
-!git status
-```
+   ```
+   !git status
+   ```
 
-```
-!dotnet --version
-```
+   This executes directly in your local shell — no AI involved. Useful for checking state without breaking your conversation flow.
 
-This runs the command in your local shell and shows the output inline. Useful for checking state without breaking your conversation flow.
-
-### Exercise 6 — Switch modes and manage operations
-
-Try these interaction patterns in your current session:
+### Exercise 3 — Modes, context, and usage
 
 1. **Cycle modes** — Press **Shift+Tab** to switch between:
    - **Interactive** (default) — back-and-forth conversation
@@ -116,23 +100,7 @@ Try these interaction patterns in your current session:
 
 2. **Stop an operation** — Press **Esc** to cancel while Copilot is thinking or working.
 
-3. **Steer while thinking** — Send a follow-up message *while* Copilot is still processing. Your message queues up and redirects Copilot when it finishes.
-
-### Exercise 7 — Check context and usage
-
-Run these commands to see what's happening under the hood:
-
-```
-/context
-```
-
-This shows a visual breakdown of your **token usage** — how much of the context window is filled and what's consuming it.
-
-```
-/usage
-```
-
-This shows **session statistics**: premium requests used, session duration, lines of code edited, and token usage per model.
+3. **Check context** — Run `/context` to see a visual breakdown of your token usage, then run `/usage` to see session statistics (premium requests, duration, tokens per model).
 
 > 💡 If your context window fills up during a long session, use `/compact` to summarize the conversation history and free up space. Copilot also does this automatically when you approach 95% of the token limit.
 
@@ -170,7 +138,7 @@ Custom instructions are Markdown files that automatically shape every Copilot re
     └── razor.instructions.md        ← Conditional: only when working with *.cshtml files
 ```
 
-### Exercise 8 — Explore loaded instructions
+### Exercise 4 — Explore loaded instructions
 
 1. In your Copilot CLI session, run:
 
@@ -188,7 +156,7 @@ Custom instructions are Markdown files that automatically shape every Copilot re
 
    Copilot will describe the architecture (N-tier), tech stack (.NET 10, EF Core), coding standards (file-scoped namespaces, async/await), testing patterns (xUnit, Arrange/Act/Assert), and security rules.
 
-### Exercise 9 — See conditional instructions in action
+### Exercise 5 — See conditional instructions in action
 
 Ask Copilot a question that involves a C# file — this triggers the `csharp.instructions.md` file (which has `applyTo: "**/*.cs"`):
 
@@ -200,19 +168,13 @@ Notice how Copilot's response follows project conventions: `/// <summary>` XML d
 
 > 💡 Custom instructions are **automatically loaded** — no setup needed. Global instructions apply everywhere; conditional instructions activate based on file type via the `applyTo` glob in their YAML front matter.
 
-### Custom Agents
+### Custom Agents & MCP Servers
 
-Custom agents are specialized AI personas defined as Markdown files. Each has a distinct role, expertise, and toolset — like team members with different specialties.
+Custom agents are specialized AI personas defined as Markdown files. **Model Context Protocol (MCP)** servers extend Copilot with external tools and data sources.
 
-### Exercise 10 — Discover your AI team
+### Exercise 6 — Discover agents and MCP servers
 
-1. Run the agent browser:
-
-   ```
-   /agent
-   ```
-
-   You'll see TaskForge's four custom agents:
+1. **Browse agents** — run `/agent` to see TaskForge's four custom agents:
 
    | Agent | File | Role |
    |-------|------|------|
@@ -221,31 +183,17 @@ Custom agents are specialized AI personas defined as Markdown files. Each has a 
    | 🛡️ **Shield** | `reviewer.agent.md` | Code Reviewer |
    | 📚 **Sage** | `doc-writer.agent.md` | Documentation Writer |
 
-2. Try invoking an agent programmatically. Exit the session, then run:
+2. **Try an agent** — exit the session, then invoke one programmatically:
 
    ```bash
    copilot --agent=architect -p "What architectural pattern does TaskForge follow?"
    ```
 
-   Blueprint analyzes the codebase through the lens of a solution architect, providing deeper architectural insight than a generic prompt.
+3. **Check MCP servers** — start a new session and run `/mcp` to see connected servers, including the built-in **GitHub MCP server** and any project-configured servers like `microsoft-learn` and `context7`.
 
-> 💡 Custom agents run as **subagents** with their own context window. This keeps the main conversation clean while offloading specialized work. Copilot can also choose to use agents automatically if it judges they're a good fit.
+> 💡 Custom agents run as **subagents** with their own context window. Copilot can also choose to use agents automatically if it judges they're a good fit.
 
-### MCP Servers
-
-**Model Context Protocol (MCP)** servers extend Copilot with external tools and data sources — like documentation APIs, databases, or deployment pipelines.
-
-### Exercise 11 — Check connected MCP servers
-
-1. In an interactive session, run:
-
-   ```
-   /mcp
-   ```
-
-   You'll see the configured servers, including the built-in **GitHub MCP server** (for interacting with GitHub.com) and any project-configured servers like `microsoft-learn` and `context7`.
-
-> 💡 This repo also includes **hooks** (shell commands that run at key points during a session), **skills** (instruction bundles for specialized tasks), and **plugins** (distributable extension packages). We'll explore these in [Lab 04](lab04.md).
+> 💡 This repo also includes **hooks**, **skills**, and **plugins**. We'll explore these in [Lab 04](lab04.md).
 
 > ✅ **Checkpoint:** You've explored custom instructions, custom agents, and MCP servers — the three main customization layers that make Copilot project-aware.
 
@@ -272,7 +220,7 @@ Together: instructions define the standards → agents apply the right expertise
 
 Copilot CLI has a rich set of commands for managing your workflow without leaving the terminal. Let's tour the most useful ones.
 
-### Exercise 12 — Review and diff
+### Exercise 7 — Code review workflow
 
 Make sure you're in an interactive session, then try these:
 
@@ -292,17 +240,11 @@ Make sure you're in an interactive session, then try these:
 
    Copilot analyzes your changes and provides feedback — like having a reviewer on demand before you commit.
 
-### Exercise 13 — Session management
+### Exercise 8 — Session management
 
 Try these commands to manage your session:
 
-1. **Summarize the conversation** to free context space:
-
-   ```
-   /compact
-   ```
-
-2. **Export your session** as a markdown file or GitHub gist:
+1. **Export your session** as a markdown file or GitHub gist:
 
    ```
    /share
@@ -310,7 +252,7 @@ Try these commands to manage your session:
 
    Choose between saving to a local file or creating a secret gist — great for sharing design decisions or debugging sessions with teammates.
 
-3. **Switch AI models** on the fly:
+2. **Switch AI models** on the fly:
 
    ```
    /model
@@ -318,46 +260,19 @@ Try these commands to manage your session:
 
    Select from available models to balance speed, cost, and capability.
 
-### Exercise 14 — Delegate and resume
-
-1. **Delegate to Copilot coding agent** — push your current session context to GitHub, where Copilot coding agent opens a draft PR and works in the background:
+3. **Delegate to Copilot coding agent** — push your session context to GitHub, where Copilot opens a draft PR and works in the background:
 
    ```
    /delegate complete the API integration tests and fix any failing edge cases
    ```
 
-   Or use the shortcut — prefix any prompt with `&`:
+   Or use the `&` shortcut: `& complete the API integration tests`.
 
-   ```
-   & complete the API integration tests and fix any failing edge cases
-   ```
+> 💡 **Autopilot from the command line:** For fully autonomous tasks, run `copilot --autopilot --yolo -p "YOUR PROMPT"`. Add `--max-autopilot-continues 10` to limit continuation cycles. You can also enter autopilot mode interactively by pressing **Shift+Tab**.
 
-2. **Resume a previous session** — pick up where you left off with full context:
+> 💡 **Resume sessions:** Use `copilot --continue` to pick up your most recent session, or `copilot --resume` to choose from a list.
 
-   ```
-   copilot --continue
-   ```
-
-   This resumes your most recent session. Use `copilot --resume` to choose from a list of past sessions.
-
-### Exercise 15 — Autopilot mode
-
-For tasks where you want Copilot to work autonomously, use autopilot mode from the command line:
-
-```bash
-copilot --autopilot --yolo --max-autopilot-continues 10 -p "YOUR PROMPT HERE"
-```
-
-| Flag | Purpose |
-|------|---------|
-| `--autopilot` | Enable autonomous continuation |
-| `--yolo` | Grant all permissions (tools, paths, URLs) |
-| `--max-autopilot-continues 10` | Limit to 10 continuation cycles |
-| `-p "..."` | The task to complete |
-
-> 💡 You can also enter autopilot mode interactively by pressing **Shift+Tab** until you see "autopilot" in the status bar.
-
-> ✅ **Checkpoint:** You've used review, diff, share, delegate, model switching, and autopilot — the power features that make the CLI a complete development environment.
+> ✅ **Checkpoint:** You've used review, diff, share, delegate, and model switching — the power features that make the CLI a complete development environment.
 
 ---
 

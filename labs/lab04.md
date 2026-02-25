@@ -3,7 +3,7 @@
 > 🎨 **Theme: Using AI in the Design Process**
 > Combine MCP servers, extensions, Copilot CLI, and custom agents into a full AI-orchestrated design-to-delivery workflow.
 
-> **Duration:** ~11 minutes
+> **Duration:** ~13 minutes
 
 **References:**
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/)
@@ -52,7 +52,7 @@ This repo includes a pre-configured `.vscode/mcp.json` file with two MCP servers
 
 > **How agents use MCP:** Notice that all custom agents in this repo have `tools: ["*"]` in their frontmatter. This grants them access to every available tool — including MCP servers. When you ask an agent a question that requires external documentation, it can automatically invoke MCP tools to fetch answers.
 
-### Exercise: Query External Documentation
+### Exercise 1: Query External Documentation
 
 Start a `copilot` interactive session (or use one-shot mode with `copilot -p`) and enter the following prompt:
 
@@ -76,7 +76,7 @@ commands and their options
 **Compare:** How does the MCP-enhanced response differ from what Copilot would provide without external documentation access?
 
 <details>
-<summary><strong>💡 What to Look For</strong></summary>
+<summary><strong>�� What to Look For</strong></summary>
 
 MCP-enhanced responses typically:
 - Include **specific version details** and **current API signatures**
@@ -105,38 +105,38 @@ MCP servers can be built in any language that supports JSON-RPC over stdio or SS
 
 ---
 
-## 4.2 Copilot Extensions
+## 4.2 Copilot Extensions & CLI Plugins
 
-### The Copilot Extensions Ecosystem
-
-GitHub Copilot Extensions bring **third-party tools directly into the Copilot Chat experience**. Instead of switching between tools, you can invoke specialized capabilities right from your editor.
+Copilot's capabilities extend beyond MCP through two additional ecosystems: **IDE extensions** for visual editor workflows and **CLI plugins** for terminal workflows. Both bring third-party tools directly into the Copilot experience.
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                  Copilot Chat                       │
+│                  Copilot Ecosystem                   │
 │                                                     │
-│  Built-in:  @workspace  @terminal                   │
-│  Agents:    @blueprint  @forge  @shield  @sage       │
-│  Extensions:@docker     @azure  @sentry  ...         │
-│  MCP:       microsoft-learn  context7  ...           │
+│  Built-in:    @workspace  @terminal                  │
+│  Agents:      @blueprint  @forge  @shield  @sage     │
+│  Extensions:  @docker     @azure  @sentry  ...       │
+│  MCP:         microsoft-learn  context7  ...         │
+│  CLI Plugins: marketplace & Git repo plugins         │
 │                                                     │
 │  💡 Primary interface: Copilot CLI (`copilot`)       │
 │     VS Code is used for code review only             │
 └─────────────────────────────────────────────────────┘
 ```
 
-**How extensions differ from agents and MCP:**
+### How These Differ
 
-| Capability | Custom Agents | MCP Servers | Extensions |
-|------------|--------------|-------------|------------|
-| **Defined in** | `.github/agents/` | `.vscode/mcp.json` | GitHub Marketplace |
-| **Scope** | Repository-specific | Workspace-wide | Account/Organization |
-| **Purpose** | AI persona with instructions | External data/tool access | Third-party integration |
-| **Invoked via** | `@agent-name` | Automatic or `@tool` | `@extension-name` |
-| **Examples** | @blueprint, @forge | microsoft-learn | @docker, @azure |
-| **Created by** | Your team | Anyone (open protocol) | Third-party vendors |
+| Capability | Custom Agents | MCP Servers | IDE Extensions | CLI Plugins |
+|------------|--------------|-------------|----------------|-------------|
+| **Defined in** | `.github/agents/` | `.vscode/mcp.json` | GitHub Marketplace | CLI marketplaces / Git repos |
+| **Scope** | Repository-specific | Workspace-wide | Account/Organization | Terminal / command line |
+| **Purpose** | AI persona with instructions | External data/tool access | Third-party integration (visual) | Third-party integration (terminal) |
+| **Invoked via** | `@agent-name` | Automatic or `@tool` | `@extension-name` in Chat | Plugin commands in CLI |
+| **Examples** | @blueprint, @forge | microsoft-learn | @docker, @azure | database-data-management |
 
-### Exercise: Explore the Extensions Marketplace
+### Exercise 2: Explore the Extension & Plugin Ecosystem
+
+**Part A — IDE Extensions:**
 
 1. Open your browser and navigate to the **GitHub Copilot Extensions marketplace**:
    👉 [github.com/marketplace?type=apps&copilot_app=true](https://github.com/marketplace?type=apps&copilot_app=true)
@@ -150,19 +150,36 @@ GitHub Copilot Extensions bring **third-party tools directly into the Copilot Ch
    | **@sentry** | Error tracking and debugging |
    | **@mermaid** | Diagram generation |
 
-3. **Note:** You don't need to install any extensions for this lab — this is an exploration exercise.
+**Part B — CLI Plugins:**
+
+3. List registered plugin marketplaces and browse available plugins:
+   ```bash
+   copilot plugin marketplace list
+   copilot plugin marketplace browse awesome-copilot
+   ```
+
+4. View and manage installed plugins:
+   ```bash
+   copilot plugin list          # View installed plugins
+   copilot plugin install database-data-management@awesome-copilot   # Install example
+   copilot plugin uninstall NAME # Remove a plugin
+   ```
+
+> **Note:** You don't need to install any extensions or plugins for this lab — this is an exploration exercise to understand the ecosystem.
+
+> 💡 Plugins can also be installed from any Git repository: `copilot plugin install OWNER/REPO`. The repo must contain a `plugin.json` file.
 
 ### Enterprise Considerations
 
-When evaluating extensions for your organization, consider:
+When evaluating extensions or plugins for your organization, consider:
 
 - **Approved extensions** — Enterprise admins can control which extensions are available
 - **Data handling** — Understand what data the extension accesses and where it's processed
 - **Security posture** — Extensions from verified publishers are preferred
-- **Compliance** — Ensure extensions meet your organization's data residency requirements
+- **Custom marketplaces** — Teams can create private plugin marketplaces: `copilot plugin marketplace add OWNER/REPO`
 
 <details>
-<summary><strong>📊 Knowledge Check: Extension vs Agent vs MCP — When Do I Use Each?</strong></summary>
+<summary><strong>📊 Knowledge Check: Extension vs Agent vs MCP vs Plugin — When Do I Use Each?</strong></summary>
 
 | Scenario | Best Choice | Why |
 |----------|------------|-----|
@@ -171,152 +188,34 @@ When evaluating extensions for your organization, consider:
 | "I want to manage Docker containers from Copilot Chat" | **Extension** | Third-party tool integration maintained by vendor |
 | "I want Copilot to follow our coding conventions" | **Custom Instructions** | `.github/copilot-instructions.md` for baseline context |
 | "I need a templated prompt for creating API endpoints" | **Reusable Prompt** | `.github/prompts/*.prompt.md` for shareable templates |
+| "I need custom terminal tooling for my CI/CD pipeline" | **CLI Plugin** | Terminal-based extensibility via marketplaces or Git repos |
 
 **Rule of thumb:**
 - **Agents** = who (persona)
 - **MCP** = what it knows (external data)
-- **Extensions** = what it can do (third-party actions)
+- **Extensions** = what it can do (third-party actions, visual)
+- **Plugins** = what it can do (third-party actions, terminal)
 - **Instructions** = how it behaves (baseline rules)
 - **Prompts** = what to ask (templated requests)
 
 </details>
 
----
-
-## 4.3 Copilot CLI Plugins: Extending Your Terminal
-
-While IDE extensions enhance Copilot Chat, **CLI plugins** extend the Copilot CLI with new capabilities directly in your terminal. Plugins are packages you install from community marketplaces or build yourself.
-
-### Plugin Architecture
-
-```
-┌─────────────────────────────────────────────┐
-│              Copilot CLI                     │
-├──────────────┬──────────────┬───────────────┤
-│  Built-in    │  Marketplace │  Custom       │
-│  Commands    │  Plugins     │  Plugins      │
-│  (suggest,   │  (community) │  (your team)  │
-│   explain)   │              │               │
-└──────────────┴──────────────┴───────────────┘
-```
-
-### Understanding Marketplaces
-
-Copilot CLI ships with two default marketplaces:
-
-| Marketplace | Description |
-|-------------|-------------|
-| `copilot-plugins` | Official GitHub plugins |
-| `awesome-copilot` | Community-curated plugins |
-
-### Exercise: Explore the Plugin Ecosystem
-
-1. **List registered marketplaces:**
-   ```bash
-   copilot plugin marketplace list
-   ```
-
-2. **Browse available plugins:**
-   ```bash
-   copilot plugin marketplace browse awesome-copilot
-   ```
-
-3. **Install a plugin** (example):
-   ```bash
-   copilot plugin install database-data-management@awesome-copilot
-   ```
-
-4. **Manage your plugins:**
-   ```bash
-   copilot plugin list          # View installed plugins
-   copilot plugin update NAME   # Update a plugin
-   copilot plugin uninstall NAME # Remove a plugin
-   ```
-
-### Exercise: Using Plugins in Interactive Sessions
-
-During an interactive Copilot CLI session, you can manage plugins with slash commands:
-
-```
-/plugin marketplace list
-/plugin marketplace browse awesome-copilot
-/plugin install PLUGIN-NAME@MARKETPLACE-NAME
-```
-
-### Installing Plugins from Git Repositories
-
-You can also install plugins directly from any Git repository:
-
-```bash
-# From GitHub
-copilot plugin install OWNER/REPO
-
-# From any Git URL
-copilot plugin install https://gitlab.com/OWNER/REPO.git
-
-# From a local path (great for development)
-copilot plugin install ./my-custom-plugin
-```
-
-> **Note:** The repository must contain a `plugin.json` file in `.github/plugin/`, `.claude-plugin/`, or the repository root.
-
-### Adding Custom Marketplaces
-
-Teams can create and share their own plugin marketplaces:
-
-```bash
-# Add a marketplace from a GitHub repository
-copilot plugin marketplace add OWNER/REPO
-
-# Remove a marketplace
-copilot plugin marketplace remove MARKETPLACE-NAME
-```
-
-### IDE Extensions vs CLI Plugins: Know the Difference
-
-| Aspect | IDE Extensions | CLI Plugins |
-|--------|---------------|-------------|
-| **Where** | VS Code, JetBrains, etc. | Terminal / command line |
-| **Invoked via** | `@extension` in Chat | Plugin commands in CLI |
-| **Install from** | VS Code Marketplace | CLI marketplaces or Git repos |
-| **Examples** | @docker, @sentry, @azure | database-data-management, etc. |
-| **Best for** | Visual workflows, chat | Terminal workflows, automation |
-
-<details>
-<summary>Knowledge Check: When would you use a CLI plugin vs an IDE extension?</summary>
-
-**Use CLI plugins when:**
-- You work primarily in the terminal
-- You need to automate CI/CD pipelines
-- You want to extend Copilot for scripting workflows
-- Your team needs custom tooling distributed via a private marketplace
-
-**Use IDE extensions when:**
-- You want visual integration in your editor
-- You need rich UI interactions (previews, diagrams)
-- The extension provides Chat-based interaction (@mentions)
-- You're working in a graphical development environment
-
-**Use both when:** You want the full Copilot experience across terminal and IDE.
-
-</details>
-
 ### ✅ Checkpoint
 
-- [ ] You can list and browse plugin marketplaces
-- [ ] You understand how to install plugins from marketplaces and Git repos
-- [ ] You can manage installed plugins (list, update, uninstall)
-- [ ] You know the difference between IDE extensions and CLI plugins
+- [ ] You browsed the extensions marketplace and understand what's available
+- [ ] You can list and browse CLI plugin marketplaces
+- [ ] You know the difference between agents, MCP, extensions, and CLI plugins
+- [ ] You understand enterprise considerations for evaluating third-party integrations
 
 ---
 
-## 4.4 Copilot CLI: Beyond the Basics
+## 4.3 Copilot CLI: Beyond the Basics
 
 In **Lab 01** you learned the fundamentals of Copilot CLI's interactive and programmatic modes. Now let's use it for real workflow automation tasks.
 
 > **Reminder:** `copilot` starts an interactive session | `copilot -p "..."` runs a single prompt
 
-### Exercise: Git Workflow Automation
+### Exercise 3: CLI Workflow Exploration
 
 Use Copilot CLI to handle common Git workflow tasks without memorizing commands:
 
@@ -333,36 +232,7 @@ copilot -p "Explain what the last 5 commits changed"
 
 **Observe:** Copilot CLI executes the tasks directly — it can interact with GitHub.com to list PRs, create issues, and more. Use `--allow-tool 'shell(git)'` to let it run git commands without prompting.
 
-### Exercise: Debugging with Copilot CLI
-
-When build errors occur, Copilot CLI can help you understand and fix them:
-
-```bash
-# Explain a build error (pipe output to Copilot)
-copilot -p "Run 'dotnet build' and explain any errors"
-
-# Get a fix suggestion
-copilot -p "Fix the build error about missing reference to TaskForge.Core"
-```
-
-### Exercise: Project Exploration
-
-Use Copilot CLI to quickly navigate and understand the codebase:
-
-```bash
-# Find async patterns in the project
-copilot -p "List all C# files in the project that contain 'async'"
-
-# Discover technical debt
-copilot -p "Find all TODO comments in the codebase"
-
-# Understand project structure
-copilot -p "Show the folder structure of src/TaskForge with file counts"
-```
-
-### Exercise: Interactive Deep Dive
-
-Start an interactive session for a longer exploration:
+Now start an interactive session for a deeper exploration:
 
 ```bash
 copilot
@@ -390,8 +260,6 @@ Create a summary of all the service interfaces and their methods
 | Multi-file code generation | ✅ Primary | |
 | Git/GitHub workflow | ✅ Primary | |
 | Architecture design | ✅ Primary | |
-| Explaining a command | ✅ Primary | |
-| Explaining code in context | ✅ Primary | |
 | CI/CD troubleshooting | ✅ Primary | |
 | Refactoring across files | ✅ Primary | |
 | Code review (PR review) | | ✅ Primary |
@@ -404,35 +272,33 @@ Create a summary of all the service interfaces and their methods
 
 ---
 
-## 4.5 Full Workflow Orchestration: Design to Delivery
+## 4.4 Full Workflow Orchestration: Design to Delivery
 
-This is the **capstone exercise** that brings together everything you've learned across all four labs. You'll walk through a complete AI-assisted workflow from design to documentation.
+This is the **capstone exercise** that brings together everything you've learned across all four labs. You'll walk through a complete AI-assisted workflow from design to delivery.
 
 ### Scenario
 
 > **Feature Request:** *"Add a Task Assignment Notification feature to TaskForge that alerts users when they are assigned to a task."*
 
-We'll use the full Copilot toolkit to design, plan, implement, review, and document this feature.
+We'll use the full Copilot toolkit to design, implement, and review this feature.
 
 ### The AI Pipeline
 
 ```
-┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
-│Blueprint │──▶│  Prompt  │──▶│  Forge/  │──▶│  Shield  │──▶│   Sage   │
-│(Design)  │   │(Plan)    │   │Copilot   │   │(Review)  │   │(Document)│
-│  [CLI]   │   │  [CLI]   │   │  [CLI]   │   │[VS Code] │   │  [CLI]   │
-└──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘
-     ▲                                              │
-     └──────── Iterate if issues found ─────────────┘
+┌──────────┐   ┌──────────┐   ┌──────────┐
+│Blueprint │──▶│  Forge/  │──▶│  Shield  │
+│(Design)  │   │Copilot   │   │(Review)  │
+│  [CLI]   │   │  [CLI]   │   │[VS Code] │
+└──────────┘   └──────────┘   └──────────┘
+     ▲                              │
+     └──── Iterate if issues ───────┘
 ```
 
-> **Note:** Only Phase 4 (Shield/Review) uses VS Code — all other phases use the Copilot CLI as the primary interface.
-
-Each phase uses a different Copilot capability, showing how they work together as a cohesive workflow.
+> **Note:** Only the Review phase uses VS Code — Design and Implement phases use the Copilot CLI as the primary interface.
 
 ---
 
-### Phase 1: Design (Blueprint Agent + MCP)
+### Exercise 4 — Phase 1: Design (Blueprint Agent + MCP)
 
 **Goal:** Create an architectural design for the notification feature.
 
@@ -475,35 +341,7 @@ Your design output should include:
 
 ---
 
-### Phase 2: Plan (Reusable Prompts + Custom Instructions)
-
-**Goal:** Create a structured implementation plan using reusable prompts.
-
-Reference the reusable prompt file in the CLI by starting an interactive session and pointing Copilot at the prompt template:
-
-```bash
-copilot
-```
-
-Then in the interactive session, reference the prompt file and provide context:
-
-```
-@.github/prompts/create-api-endpoint.prompt.md
-
-Create API endpoints for a task assignment notification system:
-- GET /api/notifications — list notifications for the current user
-- POST /api/notifications/{id}/dismiss — dismiss a notification
-- GET /api/notifications/unread-count — get unread notification count
-```
-
-**What to observe:**
-- The reusable prompt applies a **consistent structure** to the endpoint design
-- Custom instructions ensure the generated code follows TaskForge conventions (async/await, DI, XML docs)
-- The output is immediately implementable
-
----
-
-### Phase 3: Implement (Copilot CLI / Forge Agent)
+### Exercise 5 — Phase 2: Implement (Copilot CLI / Forge Agent)
 
 **Goal:** Generate the implementation across multiple files.
 
@@ -568,7 +406,7 @@ After implementation, verify:
 
 ---
 
-### Phase 4: Review (Shield Agent + Code Review)
+### Exercise 6 — Phase 3: Review (Shield Agent + Code Review)
 
 **Goal:** Validate the implementation for security, performance, and correctness.
 
@@ -604,53 +442,26 @@ Shield's review should cover:
 
 ---
 
-### Phase 5: Document (Sage Agent)
+### The Complete Pipeline in Action
 
-**Goal:** Generate comprehensive documentation for the new feature.
-
-Start a `copilot` interactive session with the doc-writer agent:
-
-```bash
-copilot --agent=doc-writer
-```
-
-Then enter the following prompt:
+You've just walked through the **AI-assisted development lifecycle**:
 
 ```
-Document the notification feature including:
-- API endpoint reference (routes, parameters, responses)
-- Data flow diagram (how a notification is created and delivered)
-- Configuration options
-- Integration points with existing TaskForge features
+ 📐 DESIGN              🔨 BUILD               🛡️ REVIEW
+ ─────────             ──────────             ──────────
+ copilot               copilot                @shield +
+ --agent=              --agent=               Code Review
+ architect             developer              [VS Code]
+ [CLI]                 [CLI]
 ```
 
-**What to observe:**
-- Sage generates structured documentation following the project's conventions
-- It includes code examples and data flow descriptions
-- The documentation covers both developer and end-user perspectives
+Each phase leverages a different Copilot capability, and the output of each phase feeds into the next. When Shield identifies issues, you iterate back to the Design or Build phase — creating a continuous improvement loop.
 
 > 💡 Use `/share` to export your entire pipeline session as a markdown file or GitHub gist — a complete record of your design-to-delivery workflow.
 
 ---
 
-### The Complete Pipeline in Action
-
-You've just walked through the **entire AI-assisted development lifecycle**:
-
-```
- 📐 DESIGN        📋 PLAN          🔨 BUILD         🛡️ REVIEW        📖 DOCUMENT
- ─────────       ──────────       ──────────       ──────────       ──────────
- copilot          copilot          copilot          @shield +        copilot
- --agent=         @prompt file     --agent=         Code Review      --agent=
- architect                         developer        [VS Code]        doc-writer
- [CLI]            [CLI]            [CLI]                             [CLI]
-```
-
-Each phase leverages a different Copilot capability, and the output of each phase feeds into the next. When Shield identifies issues, you iterate back to the Design or Build phase — creating a continuous improvement loop.
-
----
-
-## 4.6 Copilot Spaces (Bonus)
+## 4.5 Copilot Spaces (Bonus)
 
 ### What Are Copilot Spaces?
 
@@ -665,7 +476,7 @@ Each phase leverages a different Copilot capability, and the output of each phas
 
 ---
 
-## 4.7 Best Practices & What's Next
+## 4.6 Best Practices & What's Next
 
 ### Feature Summary: All Labs at a Glance
 
@@ -681,8 +492,7 @@ Each phase leverages a different Copilot capability, and the output of each phas
 | Code Review | 3, 4 | AI-powered PR review |
 | PR Summaries | 3 | Auto-generated change descriptions |
 | MCP Servers | 4 | External data and documentation access |
-| Extensions | 4 | Third-party tool integrations |
-| CLI Plugins | 4 | Terminal-based extensibility via marketplaces and Git repos |
+| Extensions & CLI Plugins | 4 | Third-party tool integrations (visual & terminal) |
 | Hooks | 2 | Lifecycle hooks for custom automation triggers |
 | Copilot Spaces | 4 | Curated context for better responses |
 
@@ -698,7 +508,7 @@ Use this as a reference when adopting Copilot in your own projects:
 - [ ] **Use quality gates between phases** — Review the output of each pipeline phase before moving to the next
 - [ ] **Leverage MCP for up-to-date information** — Connect to documentation sources for accurate, current references
 - [ ] **Combine CLI and IDE** — Use each where it's strongest: CLI for commands, IDE for code
-- [ ] **Explore CLI plugins** — Browse marketplaces for plugins that accelerate your terminal workflows
+- [ ] **Explore extensions and plugins** — Browse marketplaces for tools that accelerate your workflows
 
 ### Resources for Further Learning
 
@@ -717,10 +527,9 @@ Use this as a reference when adopting Copilot in your own projects:
 ### What You Accomplished in Lab 04
 
 ✅ Configured and used **MCP servers** to extend Copilot's knowledge with live documentation
-✅ Explored the **Copilot Extensions** ecosystem and understood when to use extensions vs agents vs MCP
-✅ Discovered **Copilot CLI Plugins** — how to browse marketplaces, install plugins, and manage custom tooling
-✅ Mastered **Copilot CLI** for git workflows, debugging, and project exploration
-✅ Orchestrated a **complete AI pipeline** — from design to documentation — using the full Copilot toolkit
+✅ Explored the **Copilot Extensions & CLI Plugins** ecosystem and understood when to use each
+✅ Mastered **Copilot CLI** for git workflows and project exploration
+✅ Orchestrated a **3-phase AI pipeline** — Design, Implement, Review — using the full Copilot toolkit
 ✅ Learned **best practices** for adopting Copilot in real projects
 
 ### What You Accomplished Across All 4 Labs
@@ -740,7 +549,6 @@ You now have a complete toolkit for AI-assisted software development. Here's how
 2. **Build your team** — Create custom agents that match your team's roles and expertise
 3. **Automate the routine** — Use reusable prompts for tasks your team does repeatedly
 4. **Extend your reach** — Connect MCP servers for the documentation and tools your team relies on
-5. **Leverage CLI plugins** — Install community plugins and build custom ones for your team's terminal workflows
-6. **Iterate continuously** — Refine your prompts, agents, and instructions as you learn what works
+5. **Iterate continuously** — Refine your prompts, agents, and instructions as you learn what works
 
 > **🎉 Congratulations!** You've completed the GitHub Copilot Design Workshop. Go build something amazing with your AI-powered team!
