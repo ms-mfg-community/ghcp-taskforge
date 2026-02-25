@@ -33,7 +33,7 @@ A hands-on workshop consisting of **4 labs (~45 minutes total)** that teaches de
 | 📝 Reusable Prompts | 1, 4 | `.github/prompts/*.prompt.md` |
 | 🤖 Custom Agents | 2 | `.github/agents/*.agent.md` |
 | 🔄 Sub-agents | 2 | Parallel agent execution |
-| ⚡ Agent Mode | 2, 4 | Autonomous multi-file editing |
+| ⚡ Copilot CLI (Agentic) | 2, 4 | Autonomous multi-file editing |
 | 🚀 Copilot Coding Agent | 3 | Issue → autonomous PR creation |
 | 🔍 Code Review | 3, 4 | AI-powered PR review |
 | 📊 PR Summaries | 3 | Auto-generated PR descriptions |
@@ -65,10 +65,10 @@ A hands-on workshop consisting of **4 labs (~45 minutes total)** that teaches de
 
 ## Prerequisites
 
-- **VS Code** with the GitHub Copilot extension
-- **.NET 8 SDK** — [Download](https://dotnet.microsoft.com/download/dotnet/8.0)
-- **GitHub CLI** with the Copilot extension — [Download](https://cli.github.com/)
-- **Node.js 18+** — [Download](https://nodejs.org/)
+- **GitHub Copilot CLI** — [Install](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli)
+- **.NET 10 SDK** — [Download](https://dotnet.microsoft.com/download/dotnet/10.0)
+- **Node.js 22+** — [Download](https://nodejs.org/)
+- **VS Code** with the GitHub Copilot extension (for code review)
 
 See the [Lab Setup guide](labs/setup.md) for detailed installation instructions.
 

@@ -118,6 +118,8 @@ list grows beyond a handful of items.
 
 [Screenshot: Assigning an issue to @copilot in the GitHub UI]
 
+> 💡 **CLI Alternative:** If you're already working in a Copilot CLI session, use `/delegate` to push your current session to the Copilot coding agent on GitHub. It creates a branch, implements the changes, and opens a PR — just like assigning to `@copilot`, but from your terminal.
+
 ### What Happens Next
 
 Once you submit the issue:
@@ -275,6 +277,8 @@ Once the coding agent has opened a PR for your filtering issue:
 Copilot will analyze the diff and leave review comments directly on the code, just like a human reviewer.
 
 > **No PR yet?** If the coding agent hasn't finished, you can practice this on any open PR in your repository.
+
+> 💡 **CLI Alternative:** You can also review code without leaving the terminal. In a Copilot CLI session, use `/review` to analyze staged or unstaged changes, or `/diff` to review all changes in the current directory.
 
 <details>
 <summary>🔍 Example: A Copilot Review Comment</summary>
@@ -465,7 +469,9 @@ Let's step back and look at the full workflow you've explored in this lab:
 | Writing code interactively with guidance | **Inline Suggestions** (Tab to accept) |
 | Reviewing a PR for bugs and best practices | **Copilot Code Review** (add Copilot as reviewer) |
 | Summarizing changes for reviewers | **PR Summaries** (click ✨ in PR description) |
-| Exploring the codebase or asking questions | **Copilot Chat** (Ctrl+Alt+I) |
+| Exploring the codebase or asking questions | **GitHub Copilot CLI** (`copilot` or `copilot -p "question"`) |
+| Handing off a task to the coding agent from CLI | **Copilot CLI** (`/delegate`) |
+| Reviewing code changes from the terminal | **Copilot CLI** (`/review` or `/diff`) |
 
 ---
 

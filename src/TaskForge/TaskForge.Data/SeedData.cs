@@ -11,6 +11,8 @@ public static class SeedData
         using var context = new ApplicationDbContext(
             serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>());
 
+        context.Database.EnsureCreated();
+
         if (context.Labels.Any())
         {
             return;
