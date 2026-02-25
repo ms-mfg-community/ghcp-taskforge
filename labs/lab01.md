@@ -10,7 +10,7 @@ References:
 - [Installing Copilot CLI](https://docs.github.com/en/copilot/how-tos/copilot-cli/set-up-copilot-cli/install-copilot-cli)
 - [Custom Instructions for Copilot](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot)
 - [Reusable Prompt Files](https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot#repository-level-prompt-files)
-- [Copilot Chat in VS Code](https://docs.github.com/en/copilot/using-github-copilot/copilot-chat/using-github-copilot-chat-in-your-ide)
+- [Custom Agents for Copilot CLI](https://docs.github.com/en/copilot/customizing-copilot/copilot-extensions/building-copilot-extensions)
 
 ---
 
@@ -24,6 +24,8 @@ GitHub Copilot isn't just an editor feature — it lives in your terminal too. *
 | Programmatic | `copilot -p "prompt"` | Pass a single prompt, Copilot completes the task and exits |
 
 Think of it as having a senior developer pair-programming with you, right in your terminal.
+
+> 💡 By default, Copilot CLI uses Claude Sonnet 4.5. Run `/model` during a session to switch between available models including Claude Sonnet 4 and GPT-5.
 
 ### Exercise 1 — Start an interactive session
 
@@ -39,9 +41,9 @@ You'll see a welcome message and a prompt. Ask Copilot about the project:
 What dotnet command would I use to create a new ASP.NET Core MVC project with individual authentication?
 ```
 
-Copilot will suggest the command and explain the flags. You can ask follow-up questions, or type `exit` to leave the session.
+Copilot will suggest the command and explain the flags. You can ask follow-up questions, or type `/exit` to leave the session.
 
-> 💡 Press **Shift+Tab** to toggle between the default ask/execute mode and **plan mode**, where Copilot builds a structured implementation plan before writing code.
+> 💡 Press **Shift+Tab** to cycle between modes: **interactive** (default) → **plan** (structured implementation plan). Enable experimental features with `/experimental` to unlock **autopilot mode**, where Copilot continues working until a task is complete.
 
 ### Exercise 2 — Use programmatic mode
 
@@ -98,25 +100,49 @@ There are two flavors:
 
 This file is **always** sent to Copilot as context — every chat, every completion, every suggestion. It's the place for project-wide standards.
 
-### Exercise 3 — Explore the global instructions
+### Exercise 4 — Explore the global instructions
 
-Open `.github/copilot-instructions.md` in your editor and read through it. Notice how it defines:
+Start a Copilot CLI session and use the `/instructions` command to see which instruction files are loaded:
+
+```
+copilot
+```
+
+Then type:
+
+```
+/instructions
+```
+
+This shows the custom instruction files Copilot has automatically loaded from your repo. You can also reference the file directly to read its contents:
+
+```
+@.github/copilot-instructions.md Summarize the key standards defined in this file.
+```
+
+Notice how the instructions define:
 
 - **Architecture** — N-tier layers (Web → Core ← Data)
-- **Tech stack** — .NET 8, EF Core, ASP.NET Core Identity
+- **Tech stack** — .NET 10, EF Core, ASP.NET Core Identity
 - **Coding standards** — file-scoped namespaces, async/await, DI patterns
 - **Testing** — xUnit, Moq, Arrange/Act/Assert
 - **Security** — input validation, anti-forgery tokens, parameterized queries
 
-> 💡 This file acts as a persistent "system prompt" for Copilot. Everything in here shapes every response you get.
+> 💡 This file acts as a persistent "system prompt" for Copilot. Everything in here shapes every response — including in the CLI. Custom instructions are **automatically loaded** whenever you start a Copilot session in a repo that contains them.
 
 ### Conditional Instructions: `*.instructions.md`
 
 Sometimes instructions should only apply to certain files. That's where the `applyTo` front matter comes in.
 
-### Exercise 4 — Examine the C# instructions
+### Exercise 5 — Examine the C# instructions
 
-Open `.github/instructions/csharp.instructions.md`. Notice the YAML front matter at the top:
+Still in your Copilot CLI session, reference the C# instructions file to explore it:
+
+```
+@.github/instructions/csharp.instructions.md What conventions does this file define? Does it have an applyTo pattern?
+```
+
+Copilot will show you the YAML front matter:
 
 ```yaml
 ---
@@ -137,18 +163,22 @@ Key conventions defined here include:
 | Interface prefix | `ITaskService` |
 | Sealed by default | `sealed class` unless inheritance is needed |
 
-### Exercise 5 — See instructions in action
+### Exercise 6 — See instructions in action
 
-1. Open any `.cs` file in the `src/TaskForge` project (e.g., `TaskForge.Data/Models/TaskItem.cs`)
-2. Open **Copilot Chat** (Ctrl+Shift+I or ⌘+Shift+I)
-3. Ask: *"How should I add a new property to track estimated hours on a TaskItem?"*
+In your Copilot CLI session, reference a C# file and ask a design question:
 
-Notice how Copilot's response follows the conventions from the instructions:
+```
+@src/TaskForge/TaskForge.Data/Models/TaskItem.cs How should I add a new property to track estimated hours on a TaskItem?
+```
+
+Notice how Copilot's response follows the conventions from the custom instructions:
 - Uses `/// <summary>` XML documentation
 - Follows the naming conventions
 - Suggests data annotations for validation
 
-> ✅ **Checkpoint:** You can see that Copilot's suggestions align with the project's coding standards.
+> 💡 The CLI automatically loads both global and conditional instructions — no extra setup needed. When you reference a `.cs` file, the C#-specific instructions kick in.
+
+> ✅ **Checkpoint:** You can see that Copilot's suggestions align with the project's coding standards, right from the CLI.
 
 ### Knowledge Check
 
@@ -183,9 +213,17 @@ Custom instructions tell Copilot *how* to write code. **Reusable prompts** tell 
 
 Each `.prompt.md` file contains a structured template that produces consistent, high-quality output every time.
 
-### Exercise 6 — Explore the design-domain-model prompt
+### Exercise 7 — Explore the design-domain-model prompt
 
-Open `.github/prompts/design-domain-model.prompt.md` and notice its structure:
+Reusable prompt files (`.prompt.md`) are designed for use in VS Code and other IDEs, where you can invoke them with the `#` selector. In the CLI, you can't invoke them directly — but you can **read them** to understand the prompt template, then use the content in your CLI conversation.
+
+In your Copilot CLI session, reference the prompt file:
+
+```
+@.github/prompts/design-domain-model.prompt.md Explain what this prompt template asks for.
+```
+
+Notice its structure:
 
 ```yaml
 ---
@@ -203,22 +241,17 @@ The prompt template asks for five deliverables:
 5. C# Classes        → Complete code following TaskForge conventions
 ```
 
-> 💡 Prompt files are checked into your repo alongside your code. This means your team shares the same "playbook" for common tasks — no more copy-pasting prompts from Slack or Notion.
+> 💡 Prompt files are checked into your repo alongside your code. This means your team shares the same "playbook" for common tasks. In the CLI, you reference them with `@` to read their content, then apply the template manually. In VS Code, you can invoke them directly with the `#` selector.
 
-### Exercise 7 — Use the prompt to design the TaskForge domain
+### Exercise 8 — Use the prompt to design the TaskForge domain
 
-1. Open **Copilot Chat** (Ctrl+Shift+I or ⌘+Shift+I)
-2. In the chat panel, type `#` and select the `design-domain-model` prompt from the list
-3. When the prompt loads, provide this as the domain area:
+Now apply the design-domain-model template in a CLI conversation. Reference both the prompt file and relevant source files to give Copilot full context:
 
 ```
-Design a domain model for a task management application with the following
-entities: Projects, Tasks, Comments, Labels, and User Assignments.
-A project contains many tasks. Tasks can have comments, labels (many-to-many),
-and be assigned to users. Track creation and modification timestamps on all entities.
+@.github/prompts/design-domain-model.prompt.md @src/TaskForge/TaskForge.Data/Models/TaskItem.cs Follow the design-domain-model prompt template. Design a domain model for a task management application with the following entities: Projects, Tasks, Comments, Labels, and User Assignments. A project contains many tasks. Tasks can have comments, labels (many-to-many), and be assigned to users. Track creation and modification timestamps on all entities.
 ```
 
-4. Review the output — Copilot should produce entity classes, relationships, and validation rules that align with the existing models in `TaskForge.Data/Models/`.
+Review the output — Copilot should produce entity classes, relationships, and validation rules that align with the existing models in `TaskForge.Data/Models/`.
 
 You should see output that looks something like this (your results may vary):
 
@@ -255,13 +288,13 @@ You should see output that looks something like this (your results may vary):
 
 > ✅ **Checkpoint:** You successfully invoked a reusable prompt and received a structured domain model design.
 
-### Exercise 8 — Try the write-unit-tests prompt
+### Exercise 9 — Try the write-unit-tests prompt
 
-1. Open `TaskForge.Data/Models/TaskItem.cs` in the editor
-2. Open **Copilot Chat** and type `#` to select the `write-unit-tests` prompt
-3. Provide:
-   - **Class to test:** `TaskItem`
-   - **Test focus:** `validation rules and property constraints`
+Use the same approach to apply the write-unit-tests prompt in the CLI:
+
+```
+@.github/prompts/write-unit-tests.prompt.md @src/TaskForge/TaskForge.Data/Models/TaskItem.cs Follow the write-unit-tests prompt template. Write unit tests for the TaskItem class focusing on validation rules and property constraints.
+```
 
 Observe how the generated tests follow the conventions from `write-unit-tests.prompt.md`:
 - `MethodName_Scenario_ExpectedResult` naming
@@ -274,9 +307,9 @@ Observe how the generated tests follow the conventions from `write-unit-tests.pr
 
 Now let's put it all together. In this section, you'll have an **iterative design conversation** with Copilot — the same way you'd whiteboard with a colleague, except your colleague has read every line of your project's instructions.
 
-### Exercise 9 — Iterative domain design
+### Exercise 10 — Iterative domain design
 
-Open **Copilot Chat** and walk through this design conversation. After each prompt, read Copilot's response before moving to the next one.
+Start a fresh Copilot CLI session (or continue your existing one) and walk through this design conversation. After each prompt, read Copilot's response before moving to the next one.
 
 **Step 1 — Explore relationships:**
 
@@ -303,7 +336,9 @@ string lengths, date constraints, and status transitions.
 
 > 💡 Notice how Copilot references the N-tier architecture, uses `file-scoped namespaces`, and suggests patterns consistent with the existing `TaskForge.Data/Models` classes. That's the custom instructions at work.
 
-### Exercise 10 — Compare AI-assisted design with manual design
+> 💡 If your context window fills up during a long design conversation, use `/compact` to summarize the history and free up space.
+
+### Exercise 11 — Compare AI-assisted design with manual design
 
 Take a moment to reflect on the design process you just went through:
 
@@ -329,13 +364,15 @@ Take a moment to reflect on the design process you just went through:
 
 ## Summary
 
-In this lab you learned how to use GitHub Copilot as a design partner across multiple surfaces:
+In this lab you learned how to use GitHub Copilot as a design partner — entirely from the CLI:
 
 - ✅ **Copilot CLI** — Used interactive and programmatic modes to explore commands and interact with GitHub, right in your terminal
-- ✅ **Custom Instructions** — Explored how `copilot-instructions.md` provides global context and `*.instructions.md` files add conditional, file-type-specific guidance
-- ✅ **Reusable Prompts** — Used `.prompt.md` files to get structured, repeatable output for domain design and test generation
-- ✅ **Copilot Chat** — Had an iterative design conversation to shape the TaskForge domain model, with Copilot respecting your project's architecture and coding standards
+- ✅ **Custom Instructions** — Used `/instructions` and `@` file references to explore how `copilot-instructions.md` provides global context and `*.instructions.md` files add conditional, file-type-specific guidance — all auto-loaded in the CLI
+- ✅ **Reusable Prompts** — Referenced `.prompt.md` files with `@` to understand prompt templates, then applied them directly in CLI conversations for domain design and test generation
+- ✅ **Iterative Design** — Had an iterative design conversation in the CLI to shape the TaskForge domain model, with Copilot respecting your project's architecture and coding standards
 
-**Key takeaway:** Copilot is most powerful when you give it context. Custom instructions and reusable prompts turn generic AI suggestions into team-aligned, project-specific guidance.
+> 💡 Use `/share` to export your design session as a markdown file or GitHub gist — great for sharing design decisions with your team.
+
+**Key takeaway:** Copilot CLI gives you the full power of AI-assisted development without leaving your terminal. Custom instructions are auto-loaded, files are referenced with `@`, and your entire design workflow can happen in a single CLI session.
 
 > **Next:** In [Lab 02](lab02.md) you will move from design to implementation — building out the TaskForge service layer with Copilot's help.

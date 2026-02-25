@@ -27,7 +27,7 @@ Without MCP, Copilot relies only on its training data and the files in your work
 
 ### MCP in This Repository
 
-This repo includes a pre-configured `.vscode/mcp.json` file with two MCP servers:
+This repo includes a pre-configured `.vscode/mcp.json` file with two MCP servers. The Copilot CLI also supports MCP — use the `/mcp` command inside an interactive session to manage MCP server connections directly from your terminal.
 
 ```json
 {
@@ -54,7 +54,7 @@ This repo includes a pre-configured `.vscode/mcp.json` file with two MCP servers
 
 ### Exercise: Query External Documentation
 
-Open **Copilot Chat** and enter the following prompt:
+Start a `copilot` interactive session (or use one-shot mode with `copilot -p`) and enter the following prompt:
 
 ```
 Using @microsoft-learn, explain how to configure EF Core with SQLite 
@@ -105,7 +105,7 @@ MCP servers can be built in any language that supports JSON-RPC over stdio or SS
 
 ---
 
-## 4.2 Copilot Extensions & Plugins
+## 4.2 Copilot Extensions
 
 ### The Copilot Extensions Ecosystem
 
@@ -115,11 +115,13 @@ GitHub Copilot Extensions bring **third-party tools directly into the Copilot Ch
 ┌─────────────────────────────────────────────────────┐
 │                  Copilot Chat                       │
 │                                                     │
-│  Built-in:  @workspace  @terminal  @vscode          │
+│  Built-in:  @workspace  @terminal                   │
 │  Agents:    @blueprint  @forge  @shield  @sage       │
 │  Extensions:@docker     @azure  @sentry  ...         │
 │  MCP:       microsoft-learn  context7  ...           │
 │                                                     │
+│  💡 Primary interface: Copilot CLI (`copilot`)       │
+│     VS Code is used for code review only             │
 └─────────────────────────────────────────────────────┘
 ```
 
@@ -377,21 +379,28 @@ Create a summary of all the service interfaces and their methods
 ```
 
 > 💡 Press **Shift+Tab** to switch to **plan mode** — Copilot will build a structured plan before making changes.
+>
+> 💡 If your context gets long during exploration, use `/compact` to summarize the conversation and free up space.
 
 ### CLI vs IDE Copilot: When to Use Each
 
-| Scenario | Use CLI (`copilot`) | Use IDE (Copilot Chat) |
+| Scenario | Use CLI (`copilot`) | Use IDE (VS Code) |
 |----------|------------------------|----------------------|
-| Quick command lookup | ✅ | |
-| Multi-file code generation | ✅ (with `--allow-all-tools`) | ✅ |
-| Git/GitHub workflow | ✅ | |
-| Architecture design | ✅ (interactive mode) | ✅ |
-| Explaining a command | ✅ | |
-| Explaining code in context | | ✅ |
-| CI/CD troubleshooting | ✅ | |
-| Refactoring across files | ✅ (agent mode) | ✅ (Agent Mode) |
+| Quick command lookup | ✅ Primary | |
+| Multi-file code generation | ✅ Primary | |
+| Git/GitHub workflow | ✅ Primary | |
+| Architecture design | ✅ Primary | |
+| Explaining a command | ✅ Primary | |
+| Explaining code in context | ✅ Primary | |
+| CI/CD troubleshooting | ✅ Primary | |
+| Refactoring across files | ✅ Primary | |
+| Code review (PR review) | | ✅ Primary |
 
-> **Pro tip:** The CLI is a full agent — it can read, write, and execute files just like Agent Mode in VS Code. Use it when you prefer the terminal, need to script AI into workflows, or want to work without an IDE.
+> **Pro tip:** The Copilot CLI is the primary interface for AI-assisted development. It's a full agent that can read, write, and execute files — use it for everything from design to documentation. Reserve VS Code for code review workflows where visual diff context is valuable.
+
+> 💡 Use `/model` to switch between available AI models during a session. Different models may perform better for different tasks — try a larger model for complex architecture decisions.
+
+> 💡 Enable experimental features with `copilot --experimental` or `/experimental` to unlock autopilot mode, where Copilot continues working autonomously until a task is complete.
 
 ---
 
@@ -410,11 +419,14 @@ We'll use the full Copilot toolkit to design, plan, implement, review, and docum
 ```
 ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐   ┌──────────┐
 │Blueprint │──▶│  Prompt  │──▶│  Forge/  │──▶│  Shield  │──▶│   Sage   │
-│(Design)  │   │(Plan)    │   │Agent Mode│   │(Review)  │   │(Document)│
+│(Design)  │   │(Plan)    │   │Copilot   │   │(Review)  │   │(Document)│
+│  [CLI]   │   │  [CLI]   │   │  [CLI]   │   │[VS Code] │   │  [CLI]   │
 └──────────┘   └──────────┘   └──────────┘   └──────────┘   └──────────┘
      ▲                                              │
      └──────── Iterate if issues found ─────────────┘
 ```
+
+> **Note:** Only Phase 4 (Shield/Review) uses VS Code — all other phases use the Copilot CLI as the primary interface.
 
 Each phase uses a different Copilot capability, showing how they work together as a cohesive workflow.
 
@@ -424,7 +436,13 @@ Each phase uses a different Copilot capability, showing how they work together a
 
 **Goal:** Create an architectural design for the notification feature.
 
-Select **@blueprint** from the agent dropdown and enter:
+Start a `copilot` interactive session with the architect agent:
+
+```bash
+copilot --agent=architect
+```
+
+Then enter the following prompt:
 
 ```
 Design a notification system for TaskForge that alerts users when they 
@@ -435,6 +453,8 @@ all three layers (Web, Core, Data). Include:
 - Controller actions
 - How it integrates with the existing Identity system
 ```
+
+> 💡 For complex design questions, try `/research` to launch a deep investigation using GitHub search and web sources before committing to an architecture.
 
 **What to observe:**
 - Blueprint uses the custom instructions from `.github/copilot-instructions.md` to understand the N-tier architecture
@@ -459,9 +479,17 @@ Your design output should include:
 
 **Goal:** Create a structured implementation plan using reusable prompts.
 
-Open the **Command Palette** (`Ctrl+Shift+P`) and search for **Copilot: Use Prompt**. Select the `create-api-endpoint` prompt and provide context about the notification feature:
+Reference the reusable prompt file in the CLI by starting an interactive session and pointing Copilot at the prompt template:
+
+```bash
+copilot
+```
+
+Then in the interactive session, reference the prompt file and provide context:
 
 ```
+@.github/prompts/create-api-endpoint.prompt.md
+
 Create API endpoints for a task assignment notification system:
 - GET /api/notifications — list notifications for the current user
 - POST /api/notifications/{id}/dismiss — dismiss a notification
@@ -475,7 +503,7 @@ Create API endpoints for a task assignment notification system:
 
 ---
 
-### Phase 3: Implement (Agent Mode / Forge Agent)
+### Phase 3: Implement (Copilot CLI / Forge Agent)
 
 **Goal:** Generate the implementation across multiple files.
 
@@ -483,7 +511,13 @@ You have two options:
 
 **Option A — Forge Agent (guided):**
 
-Select **@forge** from the agent dropdown:
+Start a `copilot` interactive session with the developer agent:
+
+```bash
+copilot --agent=developer
+```
+
+Then enter the following prompt:
 
 ```
 Implement the notification system based on this design:
@@ -495,9 +529,15 @@ Implement the notification system based on this design:
 6. Register all services in DI
 ```
 
-**Option B — Agent Mode (autonomous):**
+**Option B — Copilot CLI (autonomous):**
 
-Switch to **Agent Mode** (click the mode selector at the top of Copilot Chat) and describe the feature:
+Start a `copilot` interactive session — the CLI is agentic by default, so it will autonomously create and edit files:
+
+```bash
+copilot
+```
+
+Then describe the feature:
 
 ```
 Implement a task assignment notification feature for TaskForge. When a 
@@ -506,9 +546,12 @@ to view their notifications and dismiss them. Follow the existing
 patterns in the codebase.
 ```
 
-Agent Mode will autonomously create and edit multiple files, running terminal commands as needed.
+Copilot CLI will autonomously create and edit multiple files, running terminal commands as needed.
 
 > **💡 Option C — Coding Agent (async):** For a real project, you could also create a GitHub Issue describing this feature and assign it to Copilot. The **Coding Agent** (from Lab 03) would work on it asynchronously and open a PR when done.
+> You can also use `/delegate` in your CLI session to push your current context directly to the coding agent.
+
+> 💡 Use `/fleet` to run parallel sub-agents — e.g., one generating the model/service layer while another generates the controller/views.
 
 <details>
 <summary><strong>✅ Verification Checkpoint</strong></summary>
@@ -529,7 +572,7 @@ After implementation, verify:
 
 **Goal:** Validate the implementation for security, performance, and correctness.
 
-Select **@shield** from the agent dropdown:
+In **VS Code**, open Copilot Chat and select **@shield** from the agent dropdown (code review benefits from the IDE's inline diff view):
 
 ```
 Review the notification implementation for:
@@ -565,7 +608,13 @@ Shield's review should cover:
 
 **Goal:** Generate comprehensive documentation for the new feature.
 
-Select **@sage** from the agent dropdown:
+Start a `copilot` interactive session with the doc-writer agent:
+
+```bash
+copilot --agent=doc-writer
+```
+
+Then enter the following prompt:
 
 ```
 Document the notification feature including:
@@ -580,6 +629,8 @@ Document the notification feature including:
 - It includes code examples and data flow descriptions
 - The documentation covers both developer and end-user perspectives
 
+> 💡 Use `/share` to export your entire pipeline session as a markdown file or GitHub gist — a complete record of your design-to-delivery workflow.
+
 ---
 
 ### The Complete Pipeline in Action
@@ -589,9 +640,10 @@ You've just walked through the **entire AI-assisted development lifecycle**:
 ```
  📐 DESIGN        📋 PLAN          🔨 BUILD         🛡️ REVIEW        📖 DOCUMENT
  ─────────       ──────────       ──────────       ──────────       ──────────
- @blueprint      Reusable         @forge /         @shield +        @sage
- + MCP           Prompts +        Agent Mode /     Code Review      
-                 Instructions     Coding Agent     
+ copilot          copilot          copilot          @shield +        copilot
+ --agent=         @prompt file     --agent=         Code Review      --agent=
+ architect                         developer        [VS Code]        doc-writer
+ [CLI]            [CLI]            [CLI]                             [CLI]
 ```
 
 Each phase leverages a different Copilot capability, and the output of each phase feeds into the next. When Shield identifies issues, you iterate back to the Design or Build phase — creating a continuous improvement loop.
@@ -624,14 +676,14 @@ Each phase leverages a different Copilot capability, and the output of each phas
 | Reusable Prompts | 1, 4 | Shareable, templated prompts for common tasks |
 | Custom Agents | 2 | Specialized AI personas for different roles |
 | Sub-agents | 2 | Parallel execution for independent tasks |
-| Agent Mode | 2, 4 | Autonomous multi-file editing |
+| Copilot CLI (Agentic) | 2, 4 | Autonomous multi-file editing |
 | Coding Agent | 3 | Autonomous issue-to-PR workflow |
 | Code Review | 3, 4 | AI-powered PR review |
 | PR Summaries | 3 | Auto-generated change descriptions |
 | MCP Servers | 4 | External data and documentation access |
 | Extensions | 4 | Third-party tool integrations |
 | CLI Plugins | 4 | Terminal-based extensibility via marketplaces and Git repos |
-| Hooks | 4 | Lifecycle hooks for custom automation triggers |
+| Hooks | 2 | Lifecycle hooks for custom automation triggers |
 | Copilot Spaces | 4 | Curated context for better responses |
 
 ### Best Practices Checklist
@@ -676,7 +728,7 @@ Use this as a reference when adopting Copilot in your own projects:
 | Lab | Theme | You Learned To... |
 |-----|-------|-------------------|
 | **Lab 01** | The AI Design Studio | Set up Copilot CLI, custom instructions, and reusable prompts |
-| **Lab 02** | Building with Your AI Team | Create custom agents, use sub-agents, and leverage Agent Mode |
+| **Lab 02** | Building with Your AI Team | Create custom agents, use sub-agents, and leverage Copilot CLI |
 | **Lab 03** | The Autonomous Developer | Use the Coding Agent, code review, and inline suggestions |
 | **Lab 04** | Orchestrating the AI Pipeline | Combine MCP, extensions, CLI plugins, CLI, and agents into a full workflow |
 

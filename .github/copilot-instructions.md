@@ -16,7 +16,7 @@ Dependencies flow inward: Web → Core ← Data. The Core layer defines interfac
 
 ## Technology Stack
 
-- **.NET 8** (LTS)
+- **.NET 10**
 - **ASP.NET Core MVC** with Razor views
 - **Entity Framework Core** with SQLite provider
 - **ASP.NET Core Identity** for authentication and authorization

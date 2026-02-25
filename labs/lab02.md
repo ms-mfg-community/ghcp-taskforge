@@ -1,12 +1,12 @@
 # Lab 02 — Building with Your AI Team
 
-Use custom agents, sub-agents, and Agent Mode to design and implement features as a coordinated AI team.
+Use custom agents, sub-agents, and the Copilot CLI to design and implement features as a coordinated AI team.
 
 > ⏱️ Duration: ~12 minutes
 
 References:
-- [Custom Agents in VS Code](https://code.visualstudio.com/docs/copilot/copilot-extensibility-overview)
-- [Agent Mode](https://code.visualstudio.com/docs/copilot/chat/chat-agent-mode)
+- [Custom Agents](https://docs.github.com/en/copilot/customizing-copilot/copilot-extensions/agents)
+- [GitHub Copilot CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)
 - [GitHub Copilot Documentation](https://docs.github.com/en/copilot)
 
 ---
@@ -56,17 +56,19 @@ You are Blueprint, a senior solution architect specializing in .NET applications
 
 | Section | Purpose |
 |---------|---------|
-| `name` | Display name shown in the Copilot Chat agent dropdown |
+| `name` | Display name used with `--agent` flag or `/agent` command |
 | `description` | Brief summary of the agent's role — helps Copilot select the right agent |
-| `tools` | VS Code tools and MCP capabilities the agent can access |
+| `tools` | CLI tools and MCP capabilities the agent can access |
 | Main content | Detailed instructions: expertise, principles, response format |
 
 ### Exercise: Explore an Agent File
 
-1. Open the Explorer panel in VS Code (`Ctrl+Shift+E`)
-2. Navigate to `.github/agents/`
-3. Open `architect.agent.md` and examine its structure
-4. Note the YAML frontmatter fields and the instruction sections below
+1. View an agent file using the CLI:
+   ```
+   cat .github/agents/architect.agent.md
+   ```
+   Or reference it in a Copilot session with `@.github/agents/architect.agent.md`
+2. Examine its structure — note the YAML frontmatter fields and the instruction sections below
 
 ### Your AI Team
 
@@ -103,18 +105,25 @@ TaskForge comes pre-configured with four specialized agents — each modeled aft
 
 ### Exercise: Ask Blueprint to Analyze the Data Layer
 
-1. Open GitHub Copilot Chat (`Ctrl+Alt+I`)
-2. Click the **agent dropdown** at the top of the chat input area
-3. Select **Blueprint** from the list
+1. Start a Copilot CLI session with the Blueprint agent:
+   ```
+   copilot --agent=architect
+   ```
+   Or use a one-shot command:
+   ```
+   copilot --agent=architect -p "Analyze the data layer in src/TaskForge/TaskForge.Data/. Evaluate the entity relationships and suggest any architectural improvements."
+   ```
 
-4. Enter this prompt:
+> 💡 Use `/model` during a session to switch the underlying AI model. Different models may perform better for different agent tasks.
+
+2. If using an interactive session, enter this prompt:
 
 ```
 Analyze the data layer in src/TaskForge/TaskForge.Data/.
 Evaluate the entity relationships and suggest any architectural improvements.
 ```
 
-5. Observe Blueprint's response — it should provide:
+3. Observe Blueprint's response — it should provide:
    - An overview of the current entity model (Project, TaskItem, Comment, Label, TaskLabel, ApplicationUser)
    - Analysis of the relationships (one-to-many, many-to-many via join table)
    - Architectural recommendations
@@ -153,9 +162,12 @@ Your actual output will vary — the key is that Blueprint focuses on **architec
 
 ### Exercise: Ask Forge to Implement a Suggestion
 
-Now switch agents and ask Forge to act on Blueprint's analysis.
+Now switch to the Forge agent.
 
-1. Click the agent dropdown and select **Forge**
+1. Start a Copilot CLI session with the Forge agent:
+   ```
+   copilot --agent=developer
+   ```
 2. Enter this prompt:
 
 ```
@@ -175,38 +187,43 @@ conventions.
 
 ---
 
-## 2.3 Agent Mode: Autonomous Development
+## 2.3 Agentic Capabilities: Autonomous Development
 
-### What Is Agent Mode?
+### What Is Agentic Copilot?
 
-Agent Mode is a VS Code Copilot Chat mode that allows Copilot to **autonomously create, edit, and delete files** across your project. Instead of suggesting code snippets for you to copy, Agent Mode directly modifies your workspace — like handing the keyboard to a developer.
+The Copilot CLI is **agentic by default** — it can autonomously **create, edit, and delete files** across your project, run terminal commands, and iterate on its work. There's no mode to switch into; every CLI session has full agentic capabilities from the start. Think of it as handing the keyboard to a developer who can read your code, make changes, and verify their work.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                  Copilot Chat Modes                      │
+│              Copilot CLI Capabilities                     │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│  💬 Ask Mode       — Answers questions, no file changes  │
-│  ✏️  Edit Mode      — Edits specific files you select    │
-│  🤖 Agent Mode     — Autonomous multi-file editing       │
+│  🔍 Read & understand your codebase                      │
+│  📐 Plan multi-file changes                              │
+│  📄 Create, edit, and delete files                       │
+│  🔧 Run terminal commands (build, test, lint)            │
+│  🔄 Iterate based on errors and feedback                 │
+│  🤖 All capabilities available by default — no modes     │
 │                                                          │
 └─────────────────────────────────────────────────────────┘
 ```
 
-### When to Use Each Mode
+### What Makes It "Agentic"?
 
-| Factor | Ask Mode | Edit Mode | Agent Mode |
-|--------|----------|-----------|------------|
-| **File changes** | None | Files you specify | Agent decides |
-| **Scope** | Q&A only | Targeted edits | Multi-file creation/editing |
-| **Autonomy** | You do everything | You guide, it edits | It plans and executes |
-| **Terminal access** | No | No | Yes — can run commands |
-| **Best for** | Learning, exploration | Precise refactoring | Feature implementation |
+| Capability | Description |
+|------------|-------------|
+| **File changes** | Creates, edits, and deletes files autonomously |
+| **Scope** | Multi-file creation and editing across your project |
+| **Autonomy** | Plans and executes — decides which files to touch |
+| **Terminal access** | Runs commands like `dotnet build` to verify its work |
+| **Iteration** | Detects errors and self-corrects without prompting |
 
-### Exercise: Build a Service with Agent Mode
+### Exercise: Build a Service with Copilot CLI
 
-1. In Copilot Chat, switch to **Agent Mode**
-   - Click the mode dropdown (top of chat panel) and select **Agent**
+1. Start an interactive Copilot CLI session (CLI is agentic by default — no mode switching needed):
+   ```
+   copilot
+   ```
 
 2. Enter this prompt:
 
@@ -216,11 +233,11 @@ IProjectService. Include CRUD operations, input validation, and proper
 error handling. Follow the existing project patterns and architecture.
 ```
 
-3. **Watch Agent Mode work** — observe how it:
+3. **Watch the Copilot CLI work** — observe how it:
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│                Agent Mode Workflow                            │
+│                Copilot CLI Workflow                            │
 ├──────────────────────────────────────────────────────────────┤
 │                                                               │
 │  1. 🔍 Reads existing code to understand patterns             │
@@ -250,12 +267,12 @@ error handling. Follow the existing project patterns and architecture.
    - Is input validation present (null checks, string length)?
    - Are services registered in the DI container?
 
-5. **Accept or modify** — you can accept all changes, reject specific files, or ask Agent Mode to revise
+5. **Accept or modify** — you can accept all changes, reject specific files, or ask Copilot to revise
 
 <details>
 <summary>Expected Files Created</summary>
 
-Agent Mode should create or modify files similar to:
+Copilot CLI should create or modify files similar to:
 
 **`TaskForge.Core/Interfaces/IProjectService.cs`**
 ```csharp
@@ -289,11 +306,11 @@ public class ProjectService : IProjectService
 builder.Services.AddScoped<IProjectService, ProjectService>();
 ```
 
-Your actual output may vary in structure and naming — the key is that Agent Mode handles **multiple files autonomously**.
+Your actual output may vary in structure and naming — the key is that Copilot CLI handles **multiple files autonomously**.
 
 </details>
 
-> ✅ **Checkpoint:** Agent Mode created at least an interface and implementation file, and you reviewed the changes before accepting.
+> ✅ **Checkpoint:** Copilot CLI created at least an interface and implementation file, and you reviewed the changes before accepting.
 
 ---
 
@@ -336,7 +353,9 @@ When you give Copilot a complex prompt that involves multiple independent tasks,
 
 ### Exercise: Parallel Codebase Analysis
 
-1. In Copilot Chat (Agent Mode), enter this prompt:
+> 💡 **Fleet Mode:** Use the `/fleet` command to enable parallel sub-agent execution. This dispatches multiple agents simultaneously — ideal when tasks are independent (e.g., one agent writes tests while another writes documentation).
+
+1. In the Copilot CLI, enter this prompt:
 
 ```
 Analyze the following areas of the TaskForge codebase in parallel:
@@ -559,7 +578,7 @@ Now let's bring it all together — use multiple agents in sequence to design, i
 
 ### Step 1: Design with Blueprint 🏗️
 
-1. Select **Blueprint** from the agent dropdown
+1. Start a Copilot CLI session with the Blueprint agent: `copilot --agent=architect`
 2. Enter:
 
 ```
@@ -612,7 +631,7 @@ Controller → IDashboardService → ApplicationDbContext
 
 ### Step 2: Implement with Forge 🔨
 
-1. Select **Forge** from the agent dropdown (or use Agent Mode for multi-file creation)
+1. Start a Copilot CLI session with the Forge agent: `copilot --agent=developer`
 2. Enter:
 
 ```
@@ -624,9 +643,11 @@ Include a DTO for the dashboard data.
 
 3. Review the generated code for correctness
 
+> 💡 Between agent sessions, use `/compact` to summarize your conversation and free up context window space before switching to the next agent.
+
 ### Step 3: Review with Shield 🛡️
 
-1. Select **Shield** from the agent dropdown
+1. In **VS Code**, open Copilot Chat and select the **Shield** agent for code review (code review benefits from the IDE's inline diff view):
 2. Enter:
 
 ```
@@ -672,7 +693,7 @@ Shield might flag issues such as:
 
 ### Step 4: Document with Sage 📖
 
-1. Select **Sage** from the agent dropdown
+1. Start a Copilot CLI session with the Sage agent: `copilot --agent=doc-writer`
 2. Enter:
 
 ```
@@ -682,6 +703,8 @@ example usage from a controller.
 ```
 
 3. Sage should produce structured documentation with code examples
+
+> 💡 Use `/share` to export your multi-agent session as a markdown file or GitHub gist — a shareable record of your AI team's design-to-delivery workflow.
 
 ### Reflection
 
@@ -706,10 +729,12 @@ In this lab you learned:
 
 - **Custom agents** are Markdown files in `.github/agents/` with YAML frontmatter defining name, description, tools, and instructions
 - **Each agent has a distinct specialty** — Blueprint designs, Forge builds, Shield reviews, Sage documents
-- **Agent Mode** enables autonomous multi-file editing — Copilot decides which files to create, edit, and wire together
+- **Copilot CLI** enables autonomous multi-file editing — Copilot decides which files to create, edit, and wire together
 - **Sub-agents** run independent tasks in parallel, combining results in your main conversation
 - **Multi-agent workflows** chain specialized agents sequentially: design → implement → review → document
 - **Copilot Agent Hooks** are shell scripts triggered at lifecycle events (like `preToolUse`) that act as security gates and quality checks for your AI workflow
 - **Orchestration patterns** (sequential, parallel, hybrid) match how your tasks depend on each other
+
+> 💡 **Going further:** For larger features, use `/delegate` to push your CLI session to the Copilot coding agent on GitHub. It continues the work autonomously and opens a PR when done.
 
 **Next:** [Lab 03 — The Autonomous Developer](lab03.md) — Leverage the Copilot Coding Agent for issue-to-PR automation, code review, and inline suggestions.
