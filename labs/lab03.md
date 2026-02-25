@@ -2,7 +2,7 @@
 
 In this lab you will explore GitHub Copilot's autonomous and assistive capabilities—from assigning issues to an AI coding agent, to AI-powered code review, PR summaries, and inline suggestions.
 
-> Duration: ~12 minutes
+> Duration: ~10 minutes (core path) | ~15 minutes with optional IDE exercises
 
 References:
 - [GitHub Copilot Coding Agent](https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent)
@@ -128,7 +128,7 @@ Once you submit the issue:
 - A `copilot/*` branch is created in your repository
 - After a few minutes, a Pull Request will appear
 
-> **⏱ Timing Note:** The agent typically takes 2–10 minutes to complete its work, depending on the complexity of the issue. You can continue to the next section while you wait.
+> **⏱ Don't wait — keep going!** The coding agent typically takes **2–10 minutes** to finish. **Proceed to section 3.3 now** and read through the agent's process while it works. You'll come back to the PR in section 3.4 once it's ready.
 
 <details>
 <summary>💡 Tips for Writing Effective Agent Issues</summary>
@@ -321,13 +321,9 @@ The agent will push new commits addressing your feedback—no need to switch bra
 
 ---
 
-## 3.5 PR Summaries & Inline Suggestions
+## 3.5 PR Summaries
 
-Beyond the coding agent and code review, Copilot assists with two everyday developer tasks: **summarizing pull requests** and **suggesting code as you type**.
-
-### PR Summaries
-
-When creating or editing a Pull Request, Copilot can auto-generate a summary that helps reviewers understand the changes at a glance.
+When creating or editing a Pull Request, Copilot can **auto-generate a summary** that helps reviewers understand changes at a glance.
 
 **How to use it:**
 
@@ -362,9 +358,68 @@ This saves time for both the PR author and reviewers by immediately surfacing wh
 
 ---
 
-### Inline Suggestions
+## 3.6 The Human-AI Collaboration Loop
 
-As you write code in VS Code, Copilot provides real-time **inline suggestions**—completions that appear as ghost text based on the context of your file and the broader codebase.
+Let's step back and look at the full workflow you've explored in this lab:
+
+```
+┌─────────┐     ┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌─────────┐
+│   You    │────▶│   Copilot   │────▶│   Copilot    │────▶│    You      │────▶│  Merge  │
+│  create  │     │   Coding    │     │    Code      │     │   final     │     │   to    │
+│  issue   │     │   Agent     │     │   Review     │     │   review    │     │  main   │
+└─────────┘     └─────────────┘     └──────────────┘     └─────────────┘     └─────────┘
+  Define          Implement           Catch issues        Human judgment       Ship it
+```
+
+**You are always in control.** The AI handles implementation and catches mistakes, but you define what gets built and make the final call on what ships.
+
+### Best Practices for Working with the Coding Agent
+
+| Practice | Why It Matters |
+|----------|----------------|
+| **Write clear acceptance criteria** | The agent uses these as its implementation checklist |
+| **Include technical guidance** | File names, method names, and patterns reduce guesswork |
+| **Keep scope focused** | One feature per issue produces better results |
+| **Review the PR carefully** | The agent is good but not perfect—treat it like a junior dev's PR |
+| **Use review comments for iteration** | The agent responds to feedback, so guide it rather than fixing manually |
+
+### When to Use Each Tool
+
+| Scenario | Best Tool |
+|----------|-----------|
+| Well-defined feature with clear requirements | **Coding Agent** (assign issue to @copilot) |
+| Writing code interactively with guidance | **Inline Suggestions** (Tab to accept) |
+| Reviewing a PR for bugs and best practices | **Copilot Code Review** (add Copilot as reviewer) |
+| Summarizing changes for reviewers | **PR Summaries** (click ✨ in PR description) |
+| Exploring the codebase or asking questions | **GitHub Copilot CLI** (`copilot` or `copilot -p "question"`) |
+| Handing off a task to the coding agent from CLI | **Copilot CLI** (`/delegate`) |
+| Reviewing code changes from the terminal | **Copilot CLI** (`/review` or `/diff`) |
+
+---
+
+## Summary
+
+In this lab, you learned how to:
+
+| Capability | What You Did |
+|------------|-------------|
+| **Copilot Coding Agent** | Created a well-crafted issue and assigned it to `@copilot` for autonomous implementation |
+| **Copilot Code Review** | Requested AI-powered review on a Pull Request to catch bugs and security issues |
+| **PR Summaries** | Auto-generated a pull request summary to help reviewers understand changes |
+| **Inline Suggestions** _(bonus)_ | Used Tab-to-accept code completions while writing controller actions |
+| **Next Edit Suggestions** _(bonus)_ | Explored how Copilot predicts your next edit location across files |
+
+### Key Takeaway
+
+> The most effective developers don't choose between AI and manual coding—they use both. The coding agent handles well-defined implementation tasks while you focus on design, architecture, and the decisions that require human judgment.
+
+---
+
+## ⭐ Bonus: Inline Suggestions (~3 min)
+
+> **Optional — complete this section if you have extra time.** Inline suggestions are an IDE feature (VS Code / JetBrains) and less central to the CLI-focused workflow covered in this workshop.
+
+As you write code in your IDE, Copilot provides real-time **inline suggestions**—completions that appear as ghost text based on the context of your file and the broader codebase.
 
 **Exercise: Try Inline Suggestions**
 
@@ -421,7 +476,9 @@ The suggestion follows the patterns already established in your codebase—using
 
 ---
 
-### Next Edit Suggestions (Preview)
+## ⭐ Bonus: Next Edit Suggestions (~2 min)
+
+> **Optional — complete this section if you have extra time.** This is a preview IDE feature and not required for the core workshop path.
 
 **Next Edit Suggestions** take inline completions a step further. After you accept a suggestion or make an edit, Copilot predicts **where you'll edit next** and pre-positions a suggestion there.
 
@@ -433,63 +490,6 @@ For example:
 This creates a fluid editing flow where Copilot anticipates the chain of related changes across files.
 
 > **Preview Feature:** Next Edit Suggestions may need to be enabled in VS Code settings under `GitHub Copilot > Next Edit Suggestions`.
-
----
-
-## 3.6 The Human-AI Collaboration Loop
-
-Let's step back and look at the full workflow you've explored in this lab:
-
-```
-┌─────────┐     ┌─────────────┐     ┌──────────────┐     ┌─────────────┐     ┌─────────┐
-│   You    │────▶│   Copilot   │────▶│   Copilot    │────▶│    You      │────▶│  Merge  │
-│  create  │     │   Coding    │     │    Code      │     │   final     │     │   to    │
-│  issue   │     │   Agent     │     │   Review     │     │   review    │     │  main   │
-└─────────┘     └─────────────┘     └──────────────┘     └─────────────┘     └─────────┘
-  Define          Implement           Catch issues        Human judgment       Ship it
-```
-
-**You are always in control.** The AI handles implementation and catches mistakes, but you define what gets built and make the final call on what ships.
-
-### Best Practices for Working with the Coding Agent
-
-| Practice | Why It Matters |
-|----------|----------------|
-| **Write clear acceptance criteria** | The agent uses these as its implementation checklist |
-| **Include technical guidance** | File names, method names, and patterns reduce guesswork |
-| **Keep scope focused** | One feature per issue produces better results |
-| **Review the PR carefully** | The agent is good but not perfect—treat it like a junior dev's PR |
-| **Use review comments for iteration** | The agent responds to feedback, so guide it rather than fixing manually |
-
-### When to Use Each Tool
-
-| Scenario | Best Tool |
-|----------|-----------|
-| Well-defined feature with clear requirements | **Coding Agent** (assign issue to @copilot) |
-| Writing code interactively with guidance | **Inline Suggestions** (Tab to accept) |
-| Reviewing a PR for bugs and best practices | **Copilot Code Review** (add Copilot as reviewer) |
-| Summarizing changes for reviewers | **PR Summaries** (click ✨ in PR description) |
-| Exploring the codebase or asking questions | **GitHub Copilot CLI** (`copilot` or `copilot -p "question"`) |
-| Handing off a task to the coding agent from CLI | **Copilot CLI** (`/delegate`) |
-| Reviewing code changes from the terminal | **Copilot CLI** (`/review` or `/diff`) |
-
----
-
-## Summary
-
-In this lab, you learned how to:
-
-| Capability | What You Did |
-|------------|-------------|
-| **Copilot Coding Agent** | Created a well-crafted issue and assigned it to `@copilot` for autonomous implementation |
-| **Copilot Code Review** | Requested AI-powered review on a Pull Request to catch bugs and security issues |
-| **PR Summaries** | Auto-generated a pull request summary to help reviewers understand changes |
-| **Inline Suggestions** | Used Tab-to-accept code completions while writing controller actions |
-| **Next Edit Suggestions** | Explored how Copilot predicts your next edit location across files |
-
-### Key Takeaway
-
-> The most effective developers don't choose between AI and manual coding—they use both. The coding agent handles well-defined implementation tasks while you focus on design, architecture, and the decisions that require human judgment.
 
 ---
 

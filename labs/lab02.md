@@ -61,7 +61,7 @@ You are Blueprint, a senior solution architect specializing in .NET applications
 | `tools` | CLI tools and MCP capabilities the agent can access |
 | Main content | Detailed instructions: expertise, principles, response format |
 
-### Exercise: Explore an Agent File
+### Exercise 1: Explore an Agent File
 
 1. View an agent file using the CLI:
    ```
@@ -103,7 +103,7 @@ TaskForge comes pre-configured with four specialized agents — each modeled aft
 
 ## 2.2 Your First Agent Interaction
 
-### Exercise: Ask Blueprint to Analyze the Data Layer
+### Exercise 2: Ask Blueprint to Analyze the Data Layer
 
 1. Start a Copilot CLI session with the Blueprint agent:
    ```
@@ -114,7 +114,7 @@ TaskForge comes pre-configured with four specialized agents — each modeled aft
    copilot --agent=architect -p "Analyze the data layer in src/TaskForge/TaskForge.Data/. Evaluate the entity relationships and suggest any architectural improvements."
    ```
 
-> 💡 Use `/model` during a session to switch the underlying AI model. Different models may perform better for different agent tasks.
+> �� Use `/model` during a session to switch the underlying AI model. Different models may perform better for different agent tasks.
 
 2. If using an interactive session, enter this prompt:
 
@@ -160,30 +160,9 @@ Your actual output will vary — the key is that Blueprint focuses on **architec
 
 </details>
 
-### Exercise: Ask Forge to Implement a Suggestion
+> 💡 **Try another agent:** Run `copilot --agent=developer` with the same data-layer prompt and compare. Forge focuses on **concrete code** — interface definitions, method signatures — while Blueprint provides **design guidance** and trade-offs. The same codebase looks different through each agent's lens.
 
-Now switch to the Forge agent.
-
-1. Start a Copilot CLI session with the Forge agent:
-   ```
-   copilot --agent=developer
-   ```
-2. Enter this prompt:
-
-```
-Based on the existing data models in TaskForge.Data/Models/, create an
-IProjectRepository interface in the TaskForge.Core project that defines
-CRUD operations for the Project entity. Follow standard repository pattern
-conventions.
-```
-
-3. Observe how Forge's response differs from Blueprint's:
-   - Forge provides **concrete code** — an interface with method signatures
-   - Blueprint would have provided **design guidance** — patterns and trade-offs
-
-**Key insight:** The same codebase looks different through each agent's lens. Blueprint sees architecture; Forge sees implementation opportunities.
-
-> ✅ **Checkpoint:** You have interacted with at least two different agents and observed how their responses differ in focus and format.
+> ✅ **Checkpoint:** You have interacted with an agent and observed how its specialized focus shapes the response.
 
 ---
 
@@ -218,7 +197,7 @@ The Copilot CLI is **agentic by default** — it can autonomously **create, edit
 | **Terminal access** | Runs commands like `dotnet build` to verify its work |
 | **Iteration** | Detects errors and self-corrects without prompting |
 
-### Exercise: Build a Service with Copilot CLI
+### Exercise 3: Build a Service with Copilot CLI
 
 1. Start an interactive Copilot CLI session (CLI is agentic by default — no mode switching needed):
    ```
@@ -351,7 +330,7 @@ When you give Copilot a complex prompt that involves multiple independent tasks,
 | Generating docs for separate features | No shared state needed |
 | Running independent validations | Results are combined at the end |
 
-### Exercise: Parallel Codebase Analysis
+### Exercise 4: Parallel Codebase Analysis
 
 > 💡 **Fleet Mode:** Use the `/fleet` command to enable parallel sub-agent execution. This dispatches multiple agents simultaneously — ideal when tasks are independent (e.g., one agent writes tests while another writes documentation).
 
@@ -446,10 +425,9 @@ Hooks are configured in `.github/hooks/hooks.json` and execute custom shell comm
 
 > **Key insight:** The `preToolUse` hook is the most powerful — it can **deny** tool executions, acting as a security gate for your AI agent.
 
-### Exercise: Explore the Hooks Configuration
+### Exercise 5: Explore the Hooks Configuration
 
-1. Open `.github/hooks/hooks.json` in the repository
-2. Examine the structure:
+1. Open `.github/hooks/hooks.json` in the repository and examine the structure:
 
 ```json
 {
@@ -468,15 +446,13 @@ Hooks are configured in `.github/hooks/hooks.json` and execute custom shell comm
 }
 ```
 
-3. Note the key fields:
+2. Note the key fields:
    - `type`: Always `"command"` for shell scripts
    - `bash` / `powershell`: Platform-specific script paths
    - `cwd`: Working directory for the script
    - `timeoutSec`: Maximum execution time (default: 30s)
 
-### Exercise: Understand the Security Hook
-
-Open `scripts/hooks/security-check.sh` and examine how it works:
+3. Now open `scripts/hooks/security-check.sh` and trace how the `preToolUse` security gate works:
 
 ```bash
 #!/bin/bash
@@ -491,28 +467,7 @@ if echo "$TOOL_ARGS" | grep -qE "rm -rf /|DROP TABLE|format|sudo rm"; then
 fi
 ```
 
-**How it works:**
-- The hook receives JSON input via stdin with `toolName` and `toolArgs`
-- It inspects the command for dangerous patterns
-- If dangerous: outputs JSON with `"permissionDecision": "deny"`
-- If safe: exits silently (allows by default)
-
-### Exercise: Test a Hook Locally
-
-You can test hooks without running a full agent session:
-
-```bash
-# Simulate a dangerous command
-echo '{"timestamp":1704614600000,"cwd":".","toolName":"bash","toolArgs":"{\"command\":\"rm -rf /\"}"}' | ./scripts/hooks/security-check.sh
-
-# Expected output:
-# {"permissionDecision":"deny","permissionDecisionReason":"Dangerous command blocked by security hook"}
-
-# Simulate a safe command  
-echo '{"timestamp":1704614600000,"cwd":".","toolName":"bash","toolArgs":"{\"command\":\"dotnet build\"}"}' | ./scripts/hooks/security-check.sh
-
-# Expected output: (none — command is allowed)
-```
+4. Identify the pattern: the hook receives JSON via stdin → inspects for dangerous patterns → outputs a `deny` decision or exits silently to allow
 
 ### Hooks in the Design Process
 
@@ -545,38 +500,35 @@ In our "AI in the Design Process" theme, hooks serve as **quality gates**:
 
 </details>
 
-### ✅ Checkpoint
-
-- [ ] You can locate and explain the hooks.json configuration
-- [ ] You understand the 6 hook trigger types
-- [ ] You know that preToolUse is the only hook that can block actions
-- [ ] You can test hooks locally by piping JSON input
+> ✅ **Checkpoint:** You can locate and explain the hooks.json configuration, identify the 6 hook trigger types, and understand that `preToolUse` is the only hook that can block actions.
 
 ---
 
 ## 2.6 Building a Feature with Your AI Team
 
-Now let's bring it all together — use multiple agents in sequence to design, implement, review, and document a feature, just like a real development team.
+Now let's bring it all together — use multiple agents in sequence to design and implement a feature, just like a real development team.
 
 ### The Workflow
 
 ```
-┌───────────────────────────────────────────────────────────────────┐
-│           Multi-Agent Feature Development Pipeline                │
-├───────────────────────────────────────────────────────────────────┤
-│                                                                    │
-│  Step 1           Step 2           Step 3           Step 4        │
-│  ┌─────────┐      ┌─────────┐      ┌─────────┐      ┌─────────┐  │
-│  │Blueprint│─────▶│  Forge  │─────▶│ Shield  │─────▶│  Sage   │  │
-│  │ Design  │      │  Build  │      │ Review  │      │  Docs   │  │
-│  └─────────┘      └─────────┘      └─────────┘      └─────────┘  │
-│     🏗️               🔨               🛡️               📖        │
-│   Architect        Developer        Reviewer        Doc Writer   │
-│                                                                    │
-└───────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────┐
+│      Multi-Agent Feature Development Pipeline      │
+├───────────────────────────────────────────────────┤
+│                                                    │
+│  Step 1                    Step 2                  │
+│  ┌─────────┐               ┌─────────┐            │
+│  │Blueprint│──────────────▶│  Forge  │            │
+│  │ Design  │               │  Build  │            │
+│  └─────────┘               └─────────┘            │
+│     🏗️                        🔨                  │
+│   Architect                 Developer              │
+│                                                    │
+└───────────────────────────────────────────────────┘
 ```
 
-### Step 1: Design with Blueprint 🏗️
+### Exercise 6: Design and Build a Dashboard Feature
+
+**Step 1: Design with Blueprint 🏗️**
 
 1. Start a Copilot CLI session with the Blueprint agent: `copilot --agent=architect`
 2. Enter:
@@ -629,7 +581,9 @@ Controller → IDashboardService → ApplicationDbContext
 
 </details>
 
-### Step 2: Implement with Forge 🔨
+**Step 2: Implement with Forge 🔨**
+
+> 💡 Between agent sessions, use `/compact` to summarize your conversation and free up context window space before switching to the next agent.
 
 1. Start a Copilot CLI session with the Forge agent: `copilot --agent=developer`
 2. Enter:
@@ -643,68 +597,7 @@ Include a DTO for the dashboard data.
 
 3. Review the generated code for correctness
 
-> 💡 Between agent sessions, use `/compact` to summarize your conversation and free up context window space before switching to the next agent.
-
-### Step 3: Review with Shield 🛡️
-
-1. In **VS Code**, open Copilot Chat and select the **Shield** agent for code review (code review benefits from the IDE's inline diff view):
-2. Enter:
-
-```
-Review the IDashboardService and DashboardService that were just
-created for the Task Dashboard feature. Check for security issues,
-performance concerns, proper error handling, and adherence to best
-practices.
-```
-
-3. Shield should identify concerns like:
-   - Are queries efficient (N+1 problem)?
-   - Is authorization checked?
-   - Are there null reference risks?
-   - Is the service properly scoped for DI?
-
-<details>
-<summary>Expected Shield Feedback</summary>
-
-Shield might flag issues such as:
-
-```
-## Code Review — DashboardService
-
-### 🔴 Security
-- No user-scoping: dashboard shows ALL tasks across ALL projects
-- Should filter by the current user's accessible projects
-
-### 🟡 Performance
-- If using .ToListAsync() before grouping, data is loaded into memory
-- Prefer GroupBy in the query (server-side) over client-side grouping
-
-### 🟡 Error Handling
-- No try-catch around database operations
-- Consider returning a Result<T> type instead of throwing exceptions
-
-### 🟢 Best Practices
-- ✅ Interface segregation (IDashboardService is focused)
-- ✅ Async/await used correctly
-- ✅ Constructor injection for DbContext
-```
-
-</details>
-
-### Step 4: Document with Sage 📖
-
-1. Start a Copilot CLI session with the Sage agent: `copilot --agent=doc-writer`
-2. Enter:
-
-```
-Write developer documentation for the Task Dashboard feature.
-Include an overview, the service API, how to extend it, and
-example usage from a controller.
-```
-
-3. Sage should produce structured documentation with code examples
-
-> 💡 Use `/share` to export your multi-agent session as a markdown file or GitHub gist — a shareable record of your AI team's design-to-delivery workflow.
+> 💡 **Extending the pipeline:** In a real workflow you'd continue with Shield (`--agent=reviewer`) for code review and Sage (`--agent=doc-writer`) for documentation — the same sequential pattern, with each agent's specialty applied to the output of the previous step. Use `/share` to export your full multi-agent session as a markdown file or GitHub gist.
 
 ### Reflection
 
@@ -714,12 +607,12 @@ Consider how each agent contributed to the feature:
 |-------|-------------|---------|
 | Blueprint | Defined the architecture and contracts | Architect drawing blueprints |
 | Forge | Wrote the implementation code | Developer building from specs |
-| Shield | Found bugs and security issues | Code reviewer in a PR |
-| Sage | Created documentation for the team | Technical writer |
+| Shield *(next step)* | Would find bugs and security issues | Code reviewer in a PR |
+| Sage *(next step)* | Would create documentation for the team | Technical writer |
 
 **Could one agent have done all of this?** Yes — but the results would blend concerns. Specialized agents produce sharper, more focused output at each stage.
 
-> ✅ **Checkpoint:** You used at least three different agents in sequence to design, build, and review a feature.
+> ✅ **Checkpoint:** You used Blueprint and Forge in sequence to design and build a feature, experiencing the multi-agent handoff workflow.
 
 ---
 
