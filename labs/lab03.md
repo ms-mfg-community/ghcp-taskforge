@@ -1,14 +1,14 @@
 # Lab 03 - The Autonomous Developer
 
-In this lab you will explore GitHub Copilot's autonomous and assistive capabilities—from assigning issues to an AI coding agent, to AI-powered code review, PR summaries, and inline suggestions.
+In this lab you will explore GitHub Copilot's autonomous and assistive capabilities—from assigning issues to an AI coding agent, to AI-powered code review, PR summaries, and CLI-powered workflows.
 
-> Duration: ~10 minutes (core path) | ~15 minutes with optional IDE exercises
+> Duration: ~10 minutes (core path) | ~15 minutes with optional CLI exercises
 
 References:
 - [GitHub Copilot Coding Agent](https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent)
 - [Copilot Code Review](https://docs.github.com/en/copilot/using-github-copilot/code-review/using-copilot-code-review)
 - [Copilot Pull Request Summaries](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-for-pull-requests/creating-a-pull-request-summary-with-github-copilot)
-- [Copilot Inline Suggestions](https://docs.github.com/en/copilot/using-github-copilot/getting-code-suggestions-in-your-ide-with-github-copilot)
+- [GitHub Copilot in the CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)
 
 ---
 
@@ -406,8 +406,8 @@ In this lab, you learned how to:
 | **Copilot Coding Agent** | Created a well-crafted issue and assigned it to `@copilot` for autonomous implementation |
 | **Copilot Code Review** | Requested AI-powered review on a Pull Request to catch bugs and security issues |
 | **PR Summaries** | Auto-generated a pull request summary to help reviewers understand changes |
-| **Inline Suggestions** _(bonus)_ | Used Tab-to-accept code completions while writing controller actions |
-| **Next Edit Suggestions** _(bonus)_ | Explored how Copilot predicts your next edit location across files |
+| **CLI Code Review** _(bonus)_ | Used `/review` and `/diff` to review the coding agent's changes from the terminal |
+| **Delegate from CLI** _(bonus)_ | Used `/delegate` to push work to the coding agent directly from a CLI session |
 
 ### Key Takeaway
 
@@ -415,81 +415,102 @@ In this lab, you learned how to:
 
 ---
 
-## ⭐ Bonus: Inline Suggestions (~3 min)
+## ⭐ Bonus: CLI-Powered Code Review (~3 min)
 
-> **Optional — complete this section if you have extra time.** Inline suggestions are an IDE feature (VS Code / JetBrains) and less central to the CLI-focused workflow covered in this workshop.
+> **Optional — complete this section if you have extra time.** This exercise demonstrates how to review code changes entirely from the terminal.
 
-As you write code in your IDE, Copilot provides real-time **inline suggestions**—completions that appear as ghost text based on the context of your file and the broader codebase.
+Instead of switching to the GitHub UI to review the coding agent's PR, you can review changes directly from the Copilot CLI using `/review` and `/diff`.
 
-**Exercise: Try Inline Suggestions**
+**Exercise: Review Changes from the Terminal**
 
-1. Open `TasksController.cs` (or any controller) in VS Code
-2. Start typing a new action method:
-   ```csharp
-   public async Task<IActionResult> Details(int? id)
-   {
+1. First, fetch the coding agent's branch locally:
+   ```bash
+   git fetch origin
+   git diff main..origin/copilot/issue-<number> -- . | head -100
    ```
-3. **Pause** — observe the ghost text that appears
-4. Copilot will likely suggest the full method body, including null checks, database queries, and return statements
 
-**Keyboard shortcuts:**
+2. Start a Copilot CLI session:
+   ```bash
+   copilot
+   ```
 
-| Action | Shortcut |
-|--------|----------|
-| **Accept** suggestion | `Tab` |
-| **Dismiss** suggestion | `Esc` |
-| **Next** suggestion | `Alt + ]` |
-| **Previous** suggestion | `Alt + [` |
-| **Accept next word** | `Ctrl + →` (Windows) / `⌘ + →` (Mac) |
+3. Use `/diff` to get an AI-powered summary of all changes in the working directory:
+   ```
+   /diff
+   ```
+   Copilot analyzes the diff and explains what changed, why, and whether anything looks problematic.
+
+4. Use `/review` to get a focused code review of staged or unstaged changes:
+   ```
+   /review
+   ```
+   Copilot reviews the changes for bugs, security issues, performance problems, and adherence to coding standards—similar to requesting Copilot Code Review on a PR, but from your terminal.
 
 <details>
-<summary>🔍 Example: What an Inline Suggestion Looks Like</summary>
+<summary>🔍 Example: What a CLI Review Looks Like</summary>
 
-After typing the method signature, Copilot might suggest:
+After running `/review`, Copilot might output:
 
-```csharp
-public async Task<IActionResult> Details(int? id)
-{
-    // Ghost text appears below ↓
-    if (id == null)
-    {
-        return NotFound();
-    }
+```
+## Code Review Summary
 
-    var taskItem = await _context.TaskItems
-        .Include(t => t.Project)
-        .Include(t => t.Comments)
-        .FirstOrDefaultAsync(t => t.Id == id);
+### TasksController.cs
+✅ Filter parameters correctly use nullable types
+⚠️ Missing `.Include(t => t.Project)` — view accesses `task.Project.Name`
+   which will throw NullReferenceException without eager loading
+⚠️ Consider adding `[FromQuery]` attributes for clarity
 
-    if (taskItem == null)
-    {
-        return NotFound();
-    }
-
-    return View(taskItem);
-}
+### Views/Tasks/Index.cshtml
+✅ Anti-forgery token present on form
+✅ Selected filter values persist via `asp-for` binding
+💡 Consider adding a "Clear Filters" link for better UX
 ```
 
-The suggestion follows the patterns already established in your codebase—using `_context`, including related entities, and returning the standard `NotFound()` when appropriate.
+This gives you the same quality of review feedback you'd get on a PR, without leaving the terminal.
 
 </details>
 
+> 💡 **Pro tip:** Combine `/review` with the Shield agent for an even more thorough review: `copilot --agent=reviewer` then ask it to review recent changes.
+
 ---
 
-## ⭐ Bonus: Next Edit Suggestions (~2 min)
+## ⭐ Bonus: Delegating from the CLI (~2 min)
 
-> **Optional — complete this section if you have extra time.** This is a preview IDE feature and not required for the core workshop path.
+> **Optional — complete this section if you have extra time.** This exercise shows how to hand off work from a CLI session to the Copilot coding agent on GitHub.
 
-**Next Edit Suggestions** take inline completions a step further. After you accept a suggestion or make an edit, Copilot predicts **where you'll edit next** and pre-positions a suggestion there.
+The `/delegate` command bridges your local CLI session and the remote coding agent. Instead of manually creating a GitHub Issue, you can push your current context directly to the agent—it creates a branch, implements the changes, and opens a PR.
 
-For example:
-1. You add a `Details` action to the controller
-2. Copilot suggests you now need a `Details.cshtml` view—and jumps to the Views folder
-3. You accept, and it suggests adding a navigation link in the Index view
+**Exercise: Delegate a Task**
 
-This creates a fluid editing flow where Copilot anticipates the chain of related changes across files.
+1. Start a Copilot CLI session:
+   ```bash
+   copilot
+   ```
 
-> **Preview Feature:** Next Edit Suggestions may need to be enabled in VS Code settings under `GitHub Copilot > Next Edit Suggestions`.
+2. Describe a small feature enhancement:
+   ```
+   Add a "Clear Filters" link to the Tasks Index page that resets all 
+   filter dropdowns and shows the full task list.
+   ```
+
+3. Instead of having the CLI implement it locally, delegate to the coding agent:
+   ```
+   /delegate
+   ```
+
+4. Copilot packages your prompt and context into a GitHub Issue, assigns it to `@copilot`, and the coding agent takes over asynchronously.
+
+**When to use `/delegate` vs local implementation:**
+
+| Scenario | Use `/delegate` | Implement locally |
+|----------|----------------|-------------------|
+| Well-defined, bounded feature | ✅ | |
+| You want to keep working on other things | ✅ | |
+| You need precise control over the implementation | | ✅ |
+| Quick one-file fix | | ✅ |
+| Feature requires back-and-forth iteration | | ✅ |
+
+> 💡 After delegating, continue working in your CLI session on other tasks. The coding agent runs independently on GitHub and will open a PR when it's done.
 
 ---
 
