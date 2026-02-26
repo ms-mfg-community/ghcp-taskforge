@@ -4,7 +4,7 @@ $toolName = $input.toolName
 # Check for dangerous bash commands
 if ($toolName -eq "bash" -or $toolName -eq "terminal") {
     $command = $input.toolInput.command
-    if ($command -match 'rm\s+-rf\s+/|DROP\s+TABLE|format\s+|sudo\s+rm') {
+    if ($command -match 'rm\s+-[rf]{1,2}\s*/|DROP\s+TABLE|format\s+|sudo\s+rm') {
         Write-Output '{"permissionDecision":"deny","reason":"Blocked dangerous command: potential destructive operation detected"}'
         exit 0
     }

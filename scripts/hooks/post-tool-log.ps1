@@ -1,6 +1,6 @@
 $input = [Console]::In.ReadToEnd() | ConvertFrom-Json
 $toolName = if ($input.toolName) { $input.toolName } else { "unknown" }
-$resultType = if ($input.toolResult.type) { $input.toolResult.type } else { "unknown" }
+$resultType = if ($input.toolResult -and $input.toolResult.resultType) { $input.toolResult.resultType } else { "unknown" }
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
 if (-not (Test-Path "logs")) { New-Item -ItemType Directory -Path "logs" | Out-Null }

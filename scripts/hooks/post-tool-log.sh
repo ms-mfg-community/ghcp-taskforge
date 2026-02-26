@@ -3,7 +3,7 @@ set -e
 
 INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | jq -r '.toolName // "unknown"')
-RESULT_TYPE=$(echo "$INPUT" | jq -r '.toolResult.type // "unknown"')
+RESULT_TYPE=$(echo "$INPUT" | jq -r '.toolResult.resultType // "unknown"')
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 mkdir -p logs

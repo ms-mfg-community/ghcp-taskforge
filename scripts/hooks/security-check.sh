@@ -8,7 +8,7 @@ TOOL_NAME=$(echo "$INPUT" | jq -r '.toolName // ""')
 if [ "$TOOL_NAME" = "bash" ] || [ "$TOOL_NAME" = "terminal" ]; then
   COMMAND=$(echo "$INPUT" | jq -r '.toolInput.command // ""')
 
-  if echo "$COMMAND" | grep -qE 'rm\s+-rf\s+/|DROP\s+TABLE|format\s+|sudo\s+rm'; then
+  if echo "$COMMAND" | grep -qEi 'rm\s+-[rf]{1,2}\s*/|DROP\s+TABLE|format\s+|sudo\s+rm'; then
     echo '{"permissionDecision":"deny","reason":"Blocked dangerous command: potential destructive operation detected"}'
     exit 0
   fi
