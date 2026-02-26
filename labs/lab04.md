@@ -345,7 +345,7 @@ Your design output should include:
 
 **Goal:** Generate the implementation across multiple files.
 
-You have two options:
+You have several options — pick the one that matches your workflow:
 
 **Option A — Forge Agent (guided):**
 
@@ -386,7 +386,64 @@ patterns in the codebase.
 
 Copilot CLI will autonomously create and edit multiple files, running terminal commands as needed.
 
-> **💡 Option C — Coding Agent (async):** For a real project, you could also create a GitHub Issue describing this feature and assign it to Copilot. The **Coding Agent** (from Lab 03) would work on it asynchronously and open a PR when done.
+**Option C — Plan Mode PRD → Agent Handoff (recommended):**
+
+This option mirrors a real-world workflow: you write a **Product Requirements Document (PRD)** collaboratively with Copilot in plan mode, iterate until you're satisfied, then hand it off to an agent for implementation.
+
+1. Start a Copilot CLI session and enter plan mode with **Shift+Tab**:
+   ```bash
+   copilot
+   ```
+   Then press **Shift+Tab** to switch to plan mode (you'll see the mode indicator change).
+
+2. Describe the feature and ask Copilot to draft a PRD:
+   ```
+   Create a PRD for a task assignment notification feature in TaskForge.
+   When a task is assigned to a user, the system should create a 
+   notification. Users can view their notifications and dismiss them.
+   Include acceptance criteria, technical design across all layers 
+   (Data, Core, Web), and implementation tasks.
+   ```
+
+3. **Iterate on the plan.** Copilot generates a structured PRD in `plan.md`. Review it and refine:
+   ```
+   Add a requirement that notifications older than 30 days are 
+   automatically cleaned up. Also add an unread count badge in the 
+   navigation bar.
+   ```
+   Keep iterating until the PRD captures exactly what you want — this is your chance to shape the feature before any code is written.
+
+4. **Switch out of plan mode** with **Shift+Tab**, then hand the PRD to the developer agent:
+   ```
+   Implement the plan. Follow the PRD in plan.md exactly. Work through 
+   each task in order, update the plan as you complete items, and run 
+   dotnet build to verify after each major change.
+   ```
+
+   Or, for parallel execution, use `/fleet` to dispatch multiple agents against the plan simultaneously.
+
+<details>
+<summary>🔍 Why Plan Mode → Agent Handoff Works Well</summary>
+
+This workflow separates **what to build** from **how to build it**:
+
+| Phase | Who Drives | Focus |
+|-------|-----------|-------|
+| PRD creation | You + Copilot | Requirements, scope, acceptance criteria |
+| PRD iteration | You | Refinement, edge cases, constraints |
+| Implementation | Agent | Code generation from a clear spec |
+
+**Benefits:**
+- You maintain full control over requirements before a single line of code is written
+- The PRD serves as a contract — you can review the agent's work against it
+- Plan mode tracks tasks with checkboxes, so you can see implementation progress
+- If the agent goes off-track, you can point it back to the PRD
+
+**This mirrors how senior engineers work:** they invest time in requirements and design, then delegate implementation with a clear spec.
+
+</details>
+
+> **💡 Option D — Coding Agent (async):** For a real project, you could also create a GitHub Issue describing this feature and assign it to Copilot. The **Coding Agent** (from Lab 03) would work on it asynchronously and open a PR when done.
 > You can also use `/delegate` in your CLI session to push your current context directly to the coding agent.
 
 > 💡 Use `/fleet` to run parallel sub-agents — e.g., one generating the model/service layer while another generates the controller/views.
