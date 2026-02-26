@@ -2,7 +2,7 @@
 set -e
 
 INPUT=$(cat)
-PROMPT=$(echo "$INPUT" | jq -r '.userPrompt // "empty"')
+PROMPT=$(echo "$INPUT" | jq -r '.prompt // "empty"')
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 mkdir -p logs

@@ -2,8 +2,8 @@
 set -e
 
 INPUT=$(cat)
-SOURCE_TYPE=$(echo "$INPUT" | jq -r '.sourceType // "unknown"')
+SOURCE=$(echo "$INPUT" | jq -r '.source // "unknown"')
 TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
 mkdir -p logs
-echo "[$TIMESTAMP] Session started (source: $SOURCE_TYPE)" >> logs/session.log
+echo "[$TIMESTAMP] Session started (source: $SOURCE)" >> logs/session.log

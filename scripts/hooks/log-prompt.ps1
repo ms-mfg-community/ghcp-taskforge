@@ -1,5 +1,5 @@
 $input = [Console]::In.ReadToEnd() | ConvertFrom-Json
-$prompt = if ($input.userPrompt) { $input.userPrompt } else { "empty" }
+$prompt = if ($input.prompt) { $input.prompt } else { "empty" }
 $timestamp = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
 
 if (-not (Test-Path "logs")) { New-Item -ItemType Directory -Path "logs" | Out-Null }
