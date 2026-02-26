@@ -1,6 +1,6 @@
 # Lab 03 - The Autonomous Developer
 
-In this lab you will explore GitHub Copilot's autonomous and assistive capabilities—from assigning issues to an AI coding agent, to AI-powered code review, PR summaries, and inline suggestions.
+In this lab you will explore GitHub Copilot's autonomous and assistive capabilities—from assigning issues to an AI coding agent, to AI-powered code review, PR summaries, and CLI-powered workflows.
 
 > Duration: ~10 minutes (core path) | ~15 minutes with optional CLI exercises
 
@@ -8,7 +8,7 @@ References:
 - [GitHub Copilot Coding Agent](https://docs.github.com/en/copilot/using-github-copilot/using-copilot-coding-agent)
 - [Copilot Code Review](https://docs.github.com/en/copilot/using-github-copilot/code-review/using-copilot-code-review)
 - [Copilot Pull Request Summaries](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-for-pull-requests/creating-a-pull-request-summary-with-github-copilot)
-- [Copilot Inline Suggestions](https://docs.github.com/en/copilot/using-github-copilot/getting-code-suggestions-in-your-ide-with-github-copilot)
+- [GitHub Copilot in the CLI](https://docs.github.com/en/copilot/github-copilot-in-the-cli)
 
 ---
 
