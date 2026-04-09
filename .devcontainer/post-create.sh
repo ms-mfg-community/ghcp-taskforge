@@ -9,7 +9,7 @@ npm install -g @github/copilot
 
 # jq (used by hook scripts)
 echo "Installing jq..."
-sudo apt-get update -qq && sudo apt-get install -y -qq jq > /dev/null
+sudo apt-get update -qq && sudo apt-get install -y -qq jq
 
 # Restore .NET packages
 echo "Restoring .NET packages..."

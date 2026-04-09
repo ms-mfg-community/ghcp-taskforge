@@ -1,12 +1,8 @@
 {
   "name": "TaskForge GitHub Copilot Labs",
-  "image": "mcr.microsoft.com/devcontainers/dotnet:8.0",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
 
   "features": {
-    "ghcr.io/devcontainers/features/dotnet:2": {
-      "version": "10.0",
-      "installUsingApt": true
-    },
     "ghcr.io/devcontainers/features/node:1": {
       "version": "22"
     },
