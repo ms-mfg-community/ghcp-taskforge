@@ -1,6 +1,8 @@
-# Lab Setup
+# Lab Setup — Manual Installation
 
-In this lab you will configure your development environment and verify all tools needed for the GitHub Copilot workshop.
+> **Using Codespaces, Docker, or Podman?** If you're using a devcontainer, skip this guide — your environment is already configured. Return to the [main README](../README.md#verify-copilot-cli) to verify your Copilot CLI setup.
+
+This guide is for users who prefer to install tools manually on their local machine.
 
 > **Duration:** 10-15 minutes
 
@@ -73,12 +75,49 @@ You should see a version number like `v0.x.x`.
 
 ---
 
+## Platform-Specific Install Notes
+
+<details>
+<summary><strong>🐧 Linux</strong></summary>
+
+- **.NET 10 SDK**: Follow the [Install .NET on Linux](https://learn.microsoft.com/dotnet/core/install/linux) guide for your distribution.
+- **GitHub CLI**: Install via package manager — see [Installing gh on Linux](https://github.com/cli/cli/blob/trunk/docs/install_linux.md).
+- **Node.js**: Install via your package manager or [NodeSource](https://github.com/nodesource/distributions), or use [nvm](https://github.com/nvm-sh/nvm).
+- **VS Code**: Download from [code.visualstudio.com](https://code.visualstudio.com/), or install via Snap: `sudo snap install code --classic`.
+- **jq**: `sudo apt install jq` or `sudo dnf install jq`.
+
+</details>
+
+<details>
+<summary><strong>🍎 macOS</strong></summary>
+
+- **.NET 10 SDK**: Download from [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/10.0) or: `brew install dotnet-sdk`.
+- **GitHub CLI**: `brew install gh`.
+- **Node.js**: `brew install node`, or use [nvm](https://github.com/nvm-sh/nvm).
+- **VS Code**: Download from [code.visualstudio.com](https://code.visualstudio.com/) or: `brew install --cask visual-studio-code`.
+- **jq**: `brew install jq`.
+
+</details>
+
+<details>
+<summary><strong>🪟 Windows</strong></summary>
+
+- **.NET 10 SDK**: Download from [dotnet.microsoft.com](https://dotnet.microsoft.com/download/dotnet/10.0) or: `winget install Microsoft.DotNet.SDK.10`.
+- **GitHub CLI**: `winget install GitHub.cli` or the [MSI installer](https://cli.github.com/).
+- **Node.js**: Download from [nodejs.org](https://nodejs.org/) or: `winget install OpenJS.NodeJS.LTS`.
+- **VS Code**: Download from [code.visualstudio.com](https://code.visualstudio.com/) or: `winget install Microsoft.VisualStudioCode`.
+- **jq**: `winget install jqlang.jq` or download from [jqlang.github.io/jq](https://jqlang.github.io/jq/download/).
+
+</details>
+
+---
+
 ## Clone and Build
 
 1. **Clone the repository:**
    ```bash
-   git clone <repository-url>
-   cd ghcp-taskforge-copilot-labs
+   git clone https://github.com/ms-mfg-community/ghcp-taskforge.git
+   cd ghcp-taskforge
    ```
 2. **Navigate to the solution directory:**
    ```bash
