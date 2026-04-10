@@ -5,6 +5,40 @@
 
 ---
 
+<details>
+<summary><strong>📋 Table of Contents</strong></summary>
+
+- [📦 Installation](#-installation)
+- [🔐 Authentication](#-authentication)
+- [🎮 Modes of Operation](#-modes-of-operation)
+- [⌨️ Keyboard Shortcuts](#️-keyboard-shortcuts)
+- [🔧 Command-Line Flags](#-command-line-flags)
+- [📝 Slash Commands](#-slash-commands)
+  - [Session Management](#session-management)
+  - [Code & Review](#code--review)
+  - [Configuration](#configuration)
+  - [Advanced](#advanced)
+- [🔤 Special Prefixes](#-special-prefixes)
+- [🤖 Custom Agents](#-custom-agents)
+- [🔌 MCP (Model Context Protocol)](#-mcp-model-context-protocol)
+- [🧩 Plugins](#-plugins)
+- [📁 Custom Instructions](#-custom-instructions)
+- [🎯 Quick Recipes](#-quick-recipes)
+  - [Explore a new codebase](#explore-a-new-codebase)
+  - [Code review workflow](#code-review-workflow)
+  - [Autonomous feature implementation](#autonomous-feature-implementation)
+  - [Delegate to Copilot coding agent](#delegate-to-copilot-coding-agent)
+  - [Quick lookup (non-interactive)](#quick-lookup-non-interactive)
+  - [Switch model mid-session](#switch-model-mid-session)
+- [🔄 Session Continuity](#-session-continuity)
+- [⚡ Power Tips](#-power-tips)
+- [🆘 Troubleshooting](#-troubleshooting)
+- [📚 Resources](#-resources)
+
+</details>
+
+---
+
 ## 📦 Installation
 
 | Platform | Command |
