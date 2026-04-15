@@ -361,6 +361,9 @@ You now have:
 ### [Lab 04: Orchestrating the AI Pipeline](labs/lab04.md) (~11 min)
 > Combine MCP servers, agent mode, reusable prompts, and Copilot CLI into a full AI-orchestrated workflow.
 
+### [📋 Copilot CLI Cheat Sheet](copilot-cli-cheatsheet.md)
+> Quick reference guide — commands, shortcuts, slash commands, and tips for GitHub Copilot CLI.
+
 ---
 
 ## Repository Structure
